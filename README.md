@@ -1,2 +1,12 @@
 # Draughts-with-AI
-My NEA project for AQA A-level computer science. 
+This is my project for my NEA for A-level computer science. I had already started this project before making this repository but, due to large breaks brought on by other schoolwork, I needed to go through the project to refresh my mind. This repository will allow me to go back through what I have done for my project so far, refresh where I was, and make the changes that I have planned out.
+
+## The Project
+My project is to make a draughts game, which is split into two halves. Some brief information can be seen below but full documents containing designs and further information will be attached when I have finished with them. I will also be carrying out testing at the end of the project, which will also be attached at a later date. 
+### First Half (User Accounts)
+The first half of the project is centred around user accounts. Two slots will be used to store the accounts that are currently signed in (by storing the account's ID in a local accounts database). Users must be able to create accounts, sign into their accounts (into one of the two slots), sign out of their account, and view statistics about their accounts. The statistics stored about the accounts will have information such as the total number of games they have played, how many wins they have against other players, how many wins they have against the AI, etc. When a game is completed, the account statistics are updated. This means that two slots (variables) will need to be passed around from subroutine to subroutine. The slots will be stored in the format...
+```slotOne = [accountID, colour] # colour representing the colour that the player is. Used to make checks in the game```
+Since the game will allow for two players to play against each other or for one player to play against an AI (more information in the next section), two slots will be used as information for both players needs to be updated if two players play against each other.
+
+### Second Half (The Game)
+The second half of the game is the draughts game itself. Users will be able to choose if they want to play against an AI or against another player. The game will be carried out and account statistics will be updated (in the database) at the end of the game. The game will let user's choose the colour they want to be, choose the difficulty of the AI, etc. 
