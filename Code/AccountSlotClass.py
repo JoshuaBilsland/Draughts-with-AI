@@ -6,12 +6,6 @@ class AccountSlot():
         self.__colour = None # The colour the slot is playing as (in the game)
         self.__accountStats = {} # Stores all the stats from the stats table in the database
 
-    def clear(self): # Clear the account slot information when the account is signed out, ready for next account to sign in
-        self.__username = None
-        self.__userDatabaseID = None
-        self.__colour = None
-        self.__accountStats = {}
-
     # Get
     def getUsername(self):
         return self.__username
@@ -45,6 +39,12 @@ class AccountSlot():
         if key in self.__accountStats: # Check that the stat exists, stops new ones being added
             self.__accountStats[key] = value
     
-    
+    # Other
+    def clear(self): # Clear the account slot information when the account is signed out, ready for next account to sign in
+        self.__username = None
+        self.__userDatabaseID = None
+        self.__colour = None
+        self.__accountStats = {}
+
 
     

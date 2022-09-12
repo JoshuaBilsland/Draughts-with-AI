@@ -13,6 +13,7 @@ class Button():
         self.__height = height
         self.__text = text
 
+    # Other
     def draw(self, window): # Draw the button onto a window
         pygame.draw.rect(window, self.__colour, (self.__x, self.__y, self.__width, self.__height), 0)
         # Draw 3D edge effect
