@@ -34,5 +34,5 @@ COLUMNS = 8
 SQUARE_SIZE = WIDTH / COLUMNS
 
 # Images
-MENU_BACKGROUND_IMAGE = pygame.image.load("Main\\Sprites\\WoodMenuBackground.png")
-CROWN = pygame.transform.scale(pygame.image.load("Main\\Sprites\\Crown.png"), (SQUARE_SIZE, SQUARE_SIZE/2))
+MENU_BACKGROUND_IMAGE = pygame.image.load("Images\\WoodMenuBackground.png")
+CROWN = pygame.transform.scale(pygame.image.load("Images\\Crown.png"), (SQUARE_SIZE, SQUARE_SIZE/2))

@@ -16,11 +16,9 @@ from Constants import (
     MENU_BACKGROUND_IMAGE
 )
 
-
-
 # Displays the different options related to the accounts (Sign in, sign out, etc) - Displays once the user has clicked the account button on the main menu
-def accountAreaWindow(window, slotOne, slotTwo, run):
-    running = run
+def accountAreaWindow(window, slotOne, slotTwo):
+    running = True
 
     while running:
         window.blit(MENU_BACKGROUND_IMAGE, (0,0))
@@ -49,7 +47,7 @@ def accountAreaWindow(window, slotOne, slotTwo, run):
             elif event.type == pygame.MOUSEBUTTONDOWN: # Work out where the user clicked and if something should happen (Did they click a button?)
                 mousePos = pygame.mouse.get_pos()
                 if signInButton.isOver(window, mousePos):
-                    ChooseSlot.chooseSlot(window, slotOne, slotTwo, run)
+                    print("Sign in")
                 elif signUpButton.isOver(window, mousePos):
                     print("Sign up")
                 elif signOutButton.isOver(window, mousePos):
@@ -57,9 +55,8 @@ def accountAreaWindow(window, slotOne, slotTwo, run):
                 elif viewAccountButton.isOver(window, mousePos):
                     print("View Account")
                 elif backButton.isOver(window, mousePos):
-                    return slotOne, slotTwo # Return to main menu + return slotOne and slotTwo in case of changes
+                    return
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    return slotOne, slotTwo # Return to main menu + return slotOne and slotTwo in case of changes
+                    return
         
-#def signIn(slot):

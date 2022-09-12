@@ -3,6 +3,7 @@ import ButtonClass
 import DatabaseClass
 import GameWindow
 import AccountArea
+import AccountSlotClass
 from Constants import (
     WIDTH,
     HEIGHT, 
@@ -13,7 +14,6 @@ from Constants import (
     BEIGE, 
     MENU_BACKGROUND_IMAGE
 )
-
 
 # Setup the window
 pygame.init()
@@ -49,14 +49,14 @@ def mainMenuWindow(slotOne, slotTwo):
             elif event.type == pygame.MOUSEBUTTONDOWN: # Work out where the user clicked and if something should happen (Did they click a button?)
                 mousePos = pygame.mouse.get_pos()
                 if startGameButton.isOver(window, mousePos):
-                    slots = GameWindow.gameWindow(window,  slotOne, slotTwo) # slots are returned, slots are passed around each subroutine in the game
+                    GameWindow.gameWindow(window,  slotOne, slotTwo) # slots are returned, slots are passed around each subroutine in the game
                 elif accountsButton.isOver(window, mousePos):
-                    slots = AccountArea.accountAreaWindow(window, slotOne, slotTwo)  # slots are returned, slots are passed around each subroutine in the game
+                    AccountArea.accountAreaWindow(window, slotOne, slotTwo)  # slots are returned, slots are passed around each subroutine in the game
                 elif quitButton.isOver(window, mousePos):
                     running = False
 
 # Main
-slotOne = Account.account()
-slotTwo = Account.account()
+slotOne = AccountSlotClass.AccountSlot()
+slotTwo = AccountSlotClass.AccountSlot()
 
 mainMenuWindow(slotOne, slotTwo)
