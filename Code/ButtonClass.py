@@ -22,8 +22,8 @@ class Button():
         pygame.draw.line(window, BLACK, (self.__x, self.__y + self.__height), (self.__x + self.__width, self.__y + self.__height), 2)
         pygame.draw.line(window, BLACK, (self.__x + self.__width, self.__y), (self.__x + self.__width, self.__y + self.__height), 2)
         
-        if self.__text == "Back":
-            font = pygame.font.SysFont("britannic", int(self.__width*0.2)) # Use system fonts
+        if self.__text == "Back" or self.__text == "Back to Menu":
+            font = pygame.font.SysFont("britannic", int(self.__width*0.15)) # Use system fonts
             text = font.render(self.__text, 1, BLACK)  # Apply font settings to the text  
             window.blit(text, (self.__x + (self.__width/2 - text.get_width()/2), self.__y + (self.__height/2 - text.get_height()/2)))
         
@@ -32,8 +32,6 @@ class Button():
             text = font.render(self.__text, 1, BLACK)  # Apply font settings to the text  
             window.blit(text, (self.__x + (self.__width/2 - text.get_width()/2), self.__y + (self.__height/2 - text.get_height()/2)))
 
-
-    
     def isOver(self, window, mousePos):  # Checks if a position is within the area of the button (Used to see if the button has been clicked)
         if mousePos[0] > self.__x and mousePos[0] < self.__x + self.__width:
             if mousePos[1] > self.__y and mousePos[1] < self.__y + self.__height:

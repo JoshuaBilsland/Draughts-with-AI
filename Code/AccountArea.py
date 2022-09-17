@@ -1,6 +1,7 @@
 import pygame
 import ButtonClass
 import ChooseSlot
+import displayMessage
 from Constants import (
     WIDTH, 
     HEIGHT, 
@@ -40,7 +41,7 @@ def accountAreaWindow(window, slotOne, slotTwo):
 
         pygame.display.flip()
 
-        # Event loop
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Check if the close button in the top right is clicked
                 quit() # End the program
@@ -66,4 +67,4 @@ def signIn(window, slotOne, slotTwo):
         return True
     else:
         # Sign in function continues
-        print(returnValue)
+        displayMessage.displayMessage(window, True, True, "This is some sample text.!?")

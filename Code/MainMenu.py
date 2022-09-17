@@ -27,9 +27,9 @@ def mainMenuWindow(slotOne, slotTwo):
         # Draw/Make the main menu 
         window.blit(MENU_BACKGROUND_IMAGE, (0, 0))
         
-        mainTitleFont = pygame.font.SysFont("britannic", int(WIDTH*0.1)) # Use system fonts
+        mainTitleFont = pygame.font.SysFont("britannic", int(WIDTH*0.1)) # Get font using system fonts
         mainTitle = mainTitleFont.render("Draughts With AI", 1, BEIGE)
-        window.blit(mainTitle, mainTitle.get_rect(center=(WIDTH/2, 50))) # Centre the text on its own rect
+        window.blit(mainTitle, mainTitle.get_rect(center=(WIDTH*0.5, HEIGHT*0.1))) # Centre the text on its own rect
         
         startGameButton = ButtonClass.Button(BEIGE, REGULAR_BUTTON_X, REGULAR_BUTTON_Y+(HEIGHT*0.15), REGULAR_BUTTON_WIDTH, REGULAR_BUTTON_HEIGHT, "Start Game") # Creates start game button
         startGameButton.draw(window)
@@ -42,7 +42,7 @@ def mainMenuWindow(slotOne, slotTwo):
 
         pygame.display.flip()
     
-        # Event loop
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Check if the close button in the top right is clicked
                 quit() # End the program

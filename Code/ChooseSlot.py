@@ -33,6 +33,7 @@ def chooseSlot(window, slotOne, slotTwo):
 
         pygame.display.flip()
         
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Check if the close button in the top right is clicked
                 quit() # End the program
