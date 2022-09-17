@@ -47,7 +47,7 @@ def accountAreaWindow(window, slotOne, slotTwo):
             elif event.type == pygame.MOUSEBUTTONDOWN: # Work out where the user clicked and if something should happen (Did they click a button?)
                 mousePos = pygame.mouse.get_pos()
                 if signInButton.isOver(window, mousePos):
-                    print("Sign in")
+                    signIn(window, slotOne, slotTwo)
                 elif signUpButton.isOver(window, mousePos):
                     print("Sign up")
                 elif signOutButton.isOver(window, mousePos):
@@ -59,4 +59,6 @@ def accountAreaWindow(window, slotOne, slotTwo):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return
-        
+
+def signIn(window, slotOne, slotTwo):
+    chosenSlot = ChooseSlot.chooseSlot(window, slotOne, slotTwo)
