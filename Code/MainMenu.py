@@ -41,7 +41,7 @@ def mainMenuWindow(slotOne, slotTwo):
         quitButton.draw(window)
 
         pygame.display.flip()
-
+    
         # Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Check if the close button in the top right is clicked

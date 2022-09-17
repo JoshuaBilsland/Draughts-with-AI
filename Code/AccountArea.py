@@ -61,4 +61,9 @@ def accountAreaWindow(window, slotOne, slotTwo):
                     return
 
 def signIn(window, slotOne, slotTwo):
-    chosenSlot = ChooseSlot.chooseSlot(window, slotOne, slotTwo)
+    returnValue = ChooseSlot.chooseSlot(window, slotOne, slotTwo)
+    if returnValue == None: # If returnValue == None, back button was pressed/no slot chosen. True will tell previous page to keep running (due to how 'back' button and 'back to menu' buttons interact with the pages - See design document)
+        return True
+    else:
+        # Sign in function continues
+        print(returnValue)
