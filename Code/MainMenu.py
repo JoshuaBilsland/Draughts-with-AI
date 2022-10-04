@@ -1,3 +1,4 @@
+import sqlite3
 import pygame
 import ButtonClass
 import DatabaseClass
@@ -56,7 +57,16 @@ def mainMenuWindow(slotOne, slotTwo):
                     running = False
 
 # Main
+# ----> Slots
 slotOne = AccountSlotClass.AccountSlot()
 slotTwo = AccountSlotClass.AccountSlot()
 
+# ----> Database Setup
+databaseConnection = sqlite3.connect("draughtsGameDB.db") # Returns a connection object which is used to interact with the database. If the database doesn't exist, creates it and then connects to it.
+databaseCursor = databaseConnection.cursor() # Returns a cursor object. Used to send SQL statements to the database
+
+databaseCursor.execute("CREATE TABLE IF NOT EXISTS UserAccount(AccountID INTEGER PRIMARY KEY AUTOINCREMENT, Username CHAR(15) NOT NULL, Password CHAR(30) NOT NULL, DateCreated CHAR(10) NOT NULL)")
+databaseCursor.execute("INSERT INTO UserAccount (Username, Password, DateCreated) VALUES ('userOne', 'passwordOne', date('2022-04-04'))")
+databaseConnection.commit()
+# ----> Display the Menu
 mainMenuWindow(slotOne, slotTwo)
