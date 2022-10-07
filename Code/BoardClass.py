@@ -42,6 +42,7 @@ class Board():
                         self.__board[row].append(0)
 
 
+    # Other
     def drawBoard(self, window): # Draw the board squares and the men
         # Draw board pattern
         for row in range(ROWS):

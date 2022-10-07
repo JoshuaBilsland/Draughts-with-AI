@@ -6,7 +6,7 @@ from Constants import (
     SQUARE_SIZE
 )
 
-class Game():
+class Game:
     __window = None
     __gameMode = None
     __turn = None
@@ -30,10 +30,8 @@ class Game():
         else:
             self.__gameMode = 1
 
-    def updateDisplay(self): # Update the window/display
-        self.__board.drawBoard(self.__window)
-        pygame.display.flip()
 
+    # Get
     def getLegalMoves(self):
         return self.__legalMoves
 
@@ -45,6 +43,12 @@ class Game():
         column = int(pos[0] // SQUARE_SIZE)
         return row, column
 
+
+    # Other
+    def updateDisplay(self): # Update the window/display
+        self.__board.drawBoard(self.__window)
+        pygame.display.flip()
+    
     def processClick(self, pos): # Return True/False + carry out action depending on if the click is valid [Add stuff for if gameFinished == True]
         if self.__selectedMan == 0 and self.__gameFinished == False:
             rowAndColumn = self.getRowAndColumnFromPos(pos)

@@ -4,7 +4,7 @@ from Constants import (
     BLACK
 )
 
-class Button():
+class Button:
     def __init__(self, colour, x, y, width, height, text):
         self.__colour = colour
         self.__x = x
@@ -12,6 +12,7 @@ class Button():
         self.__width = width
         self.__height = height
         self.__text = text
+
 
     # Other
     def draw(self, window): # Draw the button onto a window

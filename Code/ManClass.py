@@ -5,7 +5,7 @@ from Constants import (
 )
 
 
-class Man():
+class Man:
     __row = None
     __column = None
     __colour = None
@@ -21,6 +21,7 @@ class Man():
         self.__y = self.determineY()
         self.__isKing = False
 
+    
     # Get
     def getRow(self):
         return self.__row
@@ -30,6 +31,7 @@ class Man():
 
     def getColour(self):
         return self.__colour
+       
         
     # Other
     def determineX(self):
