@@ -2,7 +2,8 @@ class AccountSlot():
     
     def __init__(self):
         self.__username = None
-        self.__userDatabaseID = None # Get the ID of the record which stores the account 
+        self.__database = None # database object (DatabaseClass.Database) - Used to query with the tables
+        self.__userDatabaseID = None # ID of the record which stores the account in the database
         self.__colour = None # The colour the slot is playing as (in the game)
         self.__accountStats = {} # Stores all the stats from the stats table in the database
 
@@ -10,6 +11,9 @@ class AccountSlot():
     # Get
     def getUsername(self):
         return self.__username
+
+    def getDatabase(self):
+        return self.__database
 
     def getUserDatabaseID(self):
         return self.__userDatabaseID
@@ -27,6 +31,9 @@ class AccountSlot():
     # Set
     def setUsername(self, username):
         self.__username = username
+
+    def setDatabase(self, databaseObject):
+        self.__database = databaseObject
 
     def setUserDatabaseID(self, ID):
         self.__userDatabaseID = ID

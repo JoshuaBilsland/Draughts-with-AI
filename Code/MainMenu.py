@@ -61,8 +61,10 @@ def mainMenuWindow(slotOne, slotTwo):
 slotOne = AccountSlotClass.AccountSlot()
 slotTwo = AccountSlotClass.AccountSlot()
 
-# ----> Database launch
-database = DatabaseClass.Database() # Add host, username, password
+# ----> Database launch and linking to slots
+database = DatabaseClass.Database("localhost", "DraughtsGame", "DgDbPd2!") # Add host, username, password
+slotOne.setDatabase(database)
+slotTwo.setDatabase(database)
 
 # ----> Display the Menu
 mainMenuWindow(slotOne, slotTwo)
