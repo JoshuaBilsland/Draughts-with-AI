@@ -62,7 +62,7 @@ class Database:
         databaseCursor.close()
 
     # Other
-    def makeConnection(self):
+    def makeConnection(self): 
         try:
             return mysql.connector.connect(host = self.__host, user = self.__username, password = self.__password, database = self.__database)
         except:
@@ -74,5 +74,7 @@ class Database:
         except:
             return None
 
-
+    def addNewUser(self, username, password): # Add a new user to the database
+        databaseConnection, databaseCursor = self.makeConnection(), self.makeCursor(databaseConnection)
+        
         

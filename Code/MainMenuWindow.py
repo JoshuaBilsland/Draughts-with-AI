@@ -2,7 +2,7 @@ import pygame
 import ButtonClass
 import DatabaseClass
 import GameWindow
-import AccountArea
+import AccountAreaWindow
 import AccountSlotClass
 from Constants import (
     WIDTH,
@@ -35,7 +35,7 @@ def mainMenuWindow(slotOne, slotTwo):
         startGameButton = ButtonClass.Button(BEIGE, REGULAR_BUTTON_X, REGULAR_BUTTON_Y+(HEIGHT*0.15), REGULAR_BUTTON_WIDTH, REGULAR_BUTTON_HEIGHT, "Start Game") # Creates start game button
         startGameButton.draw(window)
         
-        accountsButton = ButtonClass.Button(BEIGE, REGULAR_BUTTON_X, REGULAR_BUTTON_Y+(HEIGHT*0.35), REGULAR_BUTTON_WIDTH, REGULAR_BUTTON_HEIGHT, "Account") # Created quit button
+        accountsButton = ButtonClass.Button(BEIGE, REGULAR_BUTTON_X, REGULAR_BUTTON_Y+(HEIGHT*0.35), REGULAR_BUTTON_WIDTH, REGULAR_BUTTON_HEIGHT, "Account Area") # Created quit button
         accountsButton.draw(window)
         
         quitButton = ButtonClass.Button(BEIGE, REGULAR_BUTTON_X, REGULAR_BUTTON_Y+(HEIGHT*0.55), REGULAR_BUTTON_WIDTH, REGULAR_BUTTON_HEIGHT, "Quit") # Created quit button
@@ -52,7 +52,7 @@ def mainMenuWindow(slotOne, slotTwo):
                 if startGameButton.isOver(window, mousePos):
                     GameWindow.gameWindow(window,  slotOne, slotTwo) # slots are returned, slots are passed around each subroutine in the game
                 elif accountsButton.isOver(window, mousePos):
-                    AccountArea.accountAreaWindow(window, slotOne, slotTwo)  # slots are returned, slots are passed around each subroutine in the game
+                    AccountAreaWindow.accountAreaWindow(window, slotOne, slotTwo)  # slots are returned, slots are passed around each subroutine in the game
                 elif quitButton.isOver(window, mousePos):
                     running = False
 
