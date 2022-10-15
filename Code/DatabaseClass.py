@@ -77,4 +77,3 @@ class Database:
     def addNewUser(self, username, password): # Add a new user to the database
         databaseConnection, databaseCursor = self.makeConnection(), self.makeCursor(databaseConnection)
         
-        
