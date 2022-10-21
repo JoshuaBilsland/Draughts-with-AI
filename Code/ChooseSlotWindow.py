@@ -44,4 +44,4 @@ def chooseSlot(window, slotOne, slotTwo):
                 elif slotTwoButton.isOver(window, mousePos): # Return slotTwo as the chosen slot
                     return slotTwo
                 elif backButton.isOver(window, mousePos): # Return 
-                    return None
+                    return True

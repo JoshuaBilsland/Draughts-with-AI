@@ -1,4 +1,6 @@
+from base64 import encode
 import mysql.connector
+import hashlib
 
 class Database:
     def __init__(self, host, username, password):
@@ -20,7 +22,10 @@ class Database:
         databaseCursor.execute("CREATE DATABASE IF NOT EXISTS DraughtsGame")
         self.__database = "DraughtsGame"
 
-        # Connect to database
+
+        # Reconnect to database
+        databaseCursor.close()
+        databaseConnection.close()
         databaseConnection = mysql.connector.connect(host = self.__host, user = self.__username, password = self.__password, database = self.__database)
         databaseCursor = databaseConnection.cursor()
 
@@ -45,8 +50,8 @@ class Database:
             AverageNumberOfMovesToWinAgainstPlayers DECIMAL(6,3) NOT NULL,
             AverageNumberOfMovesToWinAgainstPlayersCount INT UNSIGNED NOT NULL,
             AverageNumberOfMovesToWinAgainstPlayersSum INT UNSIGNED NOT NULL,
-            PRIMARY KEY (StatsID)
-        )""")
+            PRIMARY KEY (StatsID))
+        """)
 
         databaseCursor.execute("""CREATE TABLE IF NOT EXISTS UserAccount (
             AccountID INT NOT NULL AUTO_INCREMENT, 
@@ -55,25 +60,61 @@ class Database:
             DataCreated DATE NOT NULL, 
             StatsID INT NOT NULL,
             PRIMARY KEY (AccountID),
-            FOREIGN KEY (StatsID) REFERENCES UserStats(StatsID)
-        )""")
+            FOREIGN KEY (StatsID) REFERENCES UserStats(StatsID))
+        """)
 
-        databaseConnection.close()
+
         databaseCursor.close()
+        databaseConnection.close()
 
     # Other
     def makeConnection(self): 
-        try:
-            return mysql.connector.connect(host = self.__host, user = self.__username, password = self.__password, database = self.__database)
-        except:
-            return None
+        return mysql.connector.connect(host = self.__host, user = self.__username, password = self.__password, database = self.__database)
+
 
     def makeCursor(self, databaseConnection):
-        try:
-            return databaseConnection.cursor()
-        except:
-            return None
+        return databaseConnection.cursor()
+
+
+    def isUsernameUnique(self, username):
+        databaseConnection = self.makeConnection()
+        databaseCursor = self.makeCursor(databaseConnection)
+
+        databaseCursor.execute("SELECT * FROM UserAccount")
+        
+        if databaseCursor.fetchall() == []:
+            return True
+        else:
+            return False
+
 
     def addNewUser(self, username, password): # Add a new user to the database
-        databaseConnection, databaseCursor = self.makeConnection(), self.makeCursor(databaseConnection)
-        
+        databaseConnection = self.makeConnection()
+        databaseCursor =  self.makeCursor(databaseConnection)
+
+        encodedPassword = password.encode() # Encode with UTF-8
+        hashedPassword = hashlib.sha256(encodedPassword) # Hash password before storing in database
+
+        if self.isUsernameUnique(username):
+            databaseCursor.execute(""" INSERT INTO UserStats (
+                TotalNumberOfWinsAgainstAI,
+                TotalNumberOfDrawsAgainstAI,
+                TotalNumberOfLossesAgainstAI,
+                TotalNumberOfGamesPlayedAgainstAI,
+                HighestWinStreakAgainstAI,
+                CurrentWinStreakAgainstAI,
+                AverageNumberOfMovesToWinAgainstAI,
+                AverageNumberOfMovesToWinAgainstAICount,
+                AverageNumberOfMovesToWinAgainstAISum,
+                TotalNumberOfWinsAgainstPlayers,
+                TotalNumberOfDrawsAgainstPlayers,
+                TotalNumberOfLossesAgainstPlayers,
+                TotalNumberOfGamesPlayedAgainstPlayers,
+                HighestWinStreakAgainstPlayers,
+                CurrentWinStreakAgainstPlayers,
+                AverageNumberOfMovesToWinAgainstPlayers,
+                AverageNumberOfMovesToWinAgainstPlayersCount,
+                AverageNumberOfMovesToWinAgainstPlayersSum) 
+                VALUES (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+            """)
+            
