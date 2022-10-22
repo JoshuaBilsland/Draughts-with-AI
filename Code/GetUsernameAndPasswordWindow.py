@@ -36,7 +36,7 @@ def getUsernameAndPassword(window, textForButton, slotOne, slotTwo):
     passwordInputStringHidden = ""
 
     # Allow keys/backspace to be held down
-    pygame.key.set_repeat(200,100)
+    pygame.key.set_repeat(250,150)
 
     while running:
         window.blit(MENU_BACKGROUND_IMAGE, (0,0))

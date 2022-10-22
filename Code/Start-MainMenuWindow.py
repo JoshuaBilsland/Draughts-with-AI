@@ -21,7 +21,7 @@ pygame.init()
 window = pygame.display.set_mode((WIDTH,HEIGHT))
 
 # Display Main Menu
-def mainMenuWindow(slotOne, slotTwo):
+def mainMenuWindow(window, slotOne, slotTwo):
     running = True
 
     while running:
@@ -67,4 +67,4 @@ slotOne.setDatabase(database)
 slotTwo.setDatabase(database)
 
 # ----> Display the Menu
-mainMenuWindow(slotOne, slotTwo)
+mainMenuWindow(window, slotOne, slotTwo)

@@ -51,7 +51,7 @@ def accountAreaWindow(window, slotOne, slotTwo):
                 if signInButton.isOver(window, mousePos):
                     signIn(window, slotOne, slotTwo)
                 elif signUpButton.isOver(window, mousePos):
-                    print("Sign up")
+                    running = signUp(window, slotOne, slotTwo)
                 elif signOutButton.isOver(window, mousePos):
                     print("Sign out")
                 elif viewAccountButton.isOver(window, mousePos):
@@ -71,3 +71,13 @@ def signIn(window, slotOne, slotTwo):
         print(GetUsernameAndPasswordWindow.getUsernameAndPassword(window, "Sign In", slotOne, slotTwo))    
 
         DisplayMessageWindow.displayMessage(window, True, True, "This is some sample text.!?") # Display success message
+    
+def signUp(window, slotOne, slotTwo):
+    returnValue = GetUsernameAndPasswordWindow.getUsernameAndPassword(window, "Sign Up", slotOne, slotTwo)
+    if returnValue != True: # Add new account if a username and password was returned
+        slotOne.signUp(returnValue[0], returnValue[1]) # Use slot object to create account in the database
+        returnValue = DisplayMessageWindow.displayMessage(window, False, True, "Account Created!")
+        if returnValue == False: # False means back to menu button was clicked - stop accountAreaWindow running
+            return False
+    elif returnValue: # True = back button was clicked, go back to previous page/window
+        return True

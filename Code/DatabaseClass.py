@@ -55,9 +55,9 @@ class Database:
 
         databaseCursor.execute("""CREATE TABLE IF NOT EXISTS UserAccount (
             AccountID INT NOT NULL AUTO_INCREMENT, 
-            Username varchar(15) NOT NULL, 
-            Password varchar(30) NOT NULL, 
-            DataCreated DATE NOT NULL, 
+            Username varchar(255) NOT NULL, 
+            Password varchar(255) NOT NULL, 
+            DateCreated DATE NOT NULL, 
             StatsID INT NOT NULL,
             PRIMARY KEY (AccountID),
             FOREIGN KEY (StatsID) REFERENCES UserStats(StatsID))
@@ -80,7 +80,9 @@ class Database:
         databaseConnection = self.makeConnection()
         databaseCursor = self.makeCursor(databaseConnection)
 
-        databaseCursor.execute("SELECT * FROM UserAccount")
+        preparedQuery = "SELECT * FROM UserAccount WHERE Username=%s"
+        usernameForPlaceholder = (username,) # Tuple needed for preparedQuery
+        databaseCursor.execute(preparedQuery,usernameForPlaceholder)
         
         if databaseCursor.fetchall() == []:
             return True
@@ -94,7 +96,7 @@ class Database:
 
         encodedPassword = password.encode() # Encode with UTF-8
         hashedPassword = hashlib.sha256(encodedPassword) # Hash password before storing in database
-
+ 
         if self.isUsernameUnique(username):
             databaseCursor.execute(""" INSERT INTO UserStats (
                 TotalNumberOfWinsAgainstAI,
@@ -117,4 +119,11 @@ class Database:
                 AverageNumberOfMovesToWinAgainstPlayersSum) 
                 VALUES (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
             """)
-            
+            databaseConnection.commit()
+
+            preparedQuery = "INSERT INTO UserAccount (Username, Password, DateCreated, StatsID) VALUES(%s,%s,NOW(),LAST_INSERT_ID())"
+            databaseCursor.execute(preparedQuery, (username, hashedPassword.hexdigest()))
+            databaseConnection.commit()
+
+            databaseCursor.close()
+            databaseConnection.close()

@@ -2,7 +2,7 @@ class AccountSlot():
     
     def __init__(self):
         self.__username = None
-        self.__database = None # database object (DatabaseClass.Database) - Used to query with the tables
+        self.__database = None # database object (DatabaseClass.Database)
         self.__userDatabaseID = None # ID of the record which stores the account in the database
         self.__colour = None # The colour the slot is playing as (in the game)
         self.__accountStats = {} # Stores all the stats from the stats table in the database
@@ -56,5 +56,7 @@ class AccountSlot():
         self.__colour = None
         self.__accountStats = {}
 
-
+    def signUp(self, username, password):
+        self.__database.addNewUser(username, password)
+        
     
