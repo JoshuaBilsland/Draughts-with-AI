@@ -1,3 +1,4 @@
+from xml.etree.ElementTree import TreeBuilder
 import pygame
 import ButtonClass
 import ChooseSlotWindow
@@ -49,7 +50,7 @@ def accountAreaWindow(window, slotOne, slotTwo):
             elif event.type == pygame.MOUSEBUTTONDOWN: # Work out where the user clicked and if something should happen (Did they click a button?)
                 mousePos = pygame.mouse.get_pos()
                 if signInButton.isOver(window, mousePos):
-                    signIn(window, slotOne, slotTwo)
+                    running = signIn(window, slotOne, slotTwo)
                 elif signUpButton.isOver(window, mousePos):
                     running = signUp(window, slotOne, slotTwo)
                 elif signOutButton.isOver(window, mousePos):
@@ -64,15 +65,31 @@ def accountAreaWindow(window, slotOne, slotTwo):
     return
 
 def signIn(window, slotOne, slotTwo):
-    returnValue = ChooseSlotWindow.chooseSlot(window, slotOne, slotTwo)
-    if returnValue == True: # Return True will tell previous page to keep running (due to how 'back' button and 'back to menu' buttons interact with the pages - See design document)
-        return True
-    else:
-        # Sign in function continues
-        print(GetUsernameAndPasswordWindow.getUsernameAndPassword(window, "Sign In", slotOne, slotTwo))    
-
-        DisplayMessageWindow.displayMessage(window, True, True, "This is some sample text.!?") # Display success message
-    
+    running = True
+    while running:
+        returnValue = ChooseSlotWindow.chooseSlot(window, slotOne, slotTwo)
+        if returnValue != True:
+            chosenSlot = returnValue
+            if chosenSlot.getAccountID() == None: # Check the slot is available (an account is not already signed into it)
+                correctUsernameAndPassword = False  # Run until a correct username & password have been submitted
+                while not correctUsernameAndPassword:
+                    returnValue = GetUsernameAndPasswordWindow.getUsernameAndPassword(window, "Sign In", slotOne, slotTwo)
+                    if returnValue != True: # A username and password was submitted, (else continue loop)
+                        returnValue = chosenSlot.signIn(returnValue[0], returnValue[1])
+                        if returnValue == None:
+                            returnValue = DisplayMessageWindow.displayMessage(window, True, True, "No Account With That Username or Password")
+                            if not returnValue: # Back to menu button was clicked, otherwise continue loop
+                                return False
+                        else:
+                            DisplayMessageWindow.displayMessage(window, False, True, "Account Signed In Successfully!")
+                            return False
+                    else:
+                        correctUsernameAndPassword = True # End loop so goes back to ChooseSlotWindow (loop restarts)
+            else: # Slot not available - display error message then continue loop when back button clicked
+                DisplayMessageWindow.displayMessage(window, True, False, "Account Already Signed into This Slot")
+        elif returnValue: # Back button was clicked, return to account area window
+            return True
+        
 def signUp(window, slotOne, slotTwo):
     returnValue = GetUsernameAndPasswordWindow.getUsernameAndPassword(window, "Sign Up", slotOne, slotTwo)
     if returnValue != True: # Add new account if a username and password was returned
@@ -92,3 +109,6 @@ def signOut(window, slotOne, slotTwo):
             return False
     elif returnValue: # True = back button was clicked, go back to previous page/window
         return True
+
+def viewAccount(window, slotOne, slotTwo):
+    print()

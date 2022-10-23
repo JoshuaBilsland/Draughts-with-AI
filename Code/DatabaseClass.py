@@ -75,6 +75,40 @@ class Database:
     def makeCursor(self, databaseConnection):
         return databaseConnection.cursor()
 
+    def checkUsernameAndPassword(self, username, password):
+        databaseConnection = self.makeConnection()
+        databaseCursor = self.makeCursor(databaseConnection)
+
+        encodedPassword = password.encode() # Encode with UTF-8
+        hashedPassword = hashlib.sha256(encodedPassword) # Hash password
+        
+        preparedQuery = "SELECT AccountID FROM UserAccount WHERE Username=%s AND Password=%s"
+        databaseCursor.execute(preparedQuery, (username, hashedPassword.hexdigest()))
+
+        if databaseCursor.fetchall() == []:
+            boolean = False
+        else:
+            boolean = True
+
+        databaseCursor.close()
+        databaseConnection.close()
+
+        return boolean
+
+    def getAccountInformation(self, username, password):
+        databaseConnection = self.makeConnection()
+        databaseCursor = self.makeCursor(databaseConnection)
+
+        encodedPassword = password.encode() # Encode with UTF-8
+        hashedPassword = hashlib.sha256(encodedPassword) # Hash password
+
+        preparedQuery = "SELECT * FROM UserAccount, UserStats WHERE Username=%s AND Password=%s"
+        # Return account information
+        accountInformation = databaseCursor.execute(preparedQuery, (username, hashedPassword.hexdigest()))
+        
+        return databaseCursor.fetchall()
+        
+
 
     def isUsernameUnique(self, username):
         databaseConnection = self.makeConnection()
@@ -84,11 +118,16 @@ class Database:
         usernameForPlaceholder = (username,) # Tuple needed for preparedQuery
         databaseCursor.execute(preparedQuery,usernameForPlaceholder)
         
+        boolean = None
         if databaseCursor.fetchall() == []:
-            return True
+            boolean = True
         else:
-            return False
+            boolean = False
 
+        databaseCursor.close()
+        databaseConnection.close()
+        
+        return boolean
 
     def addNewUser(self, username, password): # Add a new user to the database
         databaseConnection = self.makeConnection()
