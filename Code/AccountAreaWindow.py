@@ -53,7 +53,7 @@ def accountAreaWindow(window, slotOne, slotTwo):
                 elif signUpButton.isOver(window, mousePos):
                     running = signUp(window, slotOne, slotTwo)
                 elif signOutButton.isOver(window, mousePos):
-                    print("Sign out")
+                    running = signOut(window, slotOne, slotTwo)
                 elif viewAccountButton.isOver(window, mousePos):
                     print("View Account")
                 elif backButton.isOver(window, mousePos):
@@ -61,6 +61,7 @@ def accountAreaWindow(window, slotOne, slotTwo):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return
+    return
 
 def signIn(window, slotOne, slotTwo):
     returnValue = ChooseSlotWindow.chooseSlot(window, slotOne, slotTwo)
@@ -77,6 +78,16 @@ def signUp(window, slotOne, slotTwo):
     if returnValue != True: # Add new account if a username and password was returned
         slotOne.signUp(returnValue[0], returnValue[1]) # Use slot object to create account in the database
         returnValue = DisplayMessageWindow.displayMessage(window, False, True, "Account Created!")
+        if returnValue == False: # False means back to menu button was clicked - stop accountAreaWindow running
+            return False
+    elif returnValue: # True = back button was clicked, go back to previous page/window
+        return True
+
+def signOut(window, slotOne, slotTwo):
+    returnValue = ChooseSlotWindow.chooseSlot(window, slotOne, slotTwo) # choose slot to sign out
+    if returnValue != True:
+        returnValue.signOut()
+        returnValue = DisplayMessageWindow.displayMessage(window, False, True, "Account Signed Out!")
         if returnValue == False: # False means back to menu button was clicked - stop accountAreaWindow running
             return False
     elif returnValue: # True = back button was clicked, go back to previous page/window

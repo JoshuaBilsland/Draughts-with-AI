@@ -1,11 +1,30 @@
-class AccountSlot():
+class AccountSlot:
     
     def __init__(self):
         self.__username = None
         self.__database = None # database object (DatabaseClass.Database)
-        self.__userDatabaseID = None # ID of the record which stores the account in the database
+        self.__AccountID = None # ID of the record which stores the account in the database
         self.__colour = None # The colour the slot is playing as (in the game)
-        self.__accountStats = {} # Stores all the stats from the stats table in the database
+        self.__accountStats = { # Stores all the stats from the stats table in the database
+            "Total Number of Wins Against AI":None,
+            "Total Number of Draws Against AI":None,
+            "Total Number of Losses Against AI":None,
+            "Total Number of Games Played Against AI":None,
+            "Highest Win Streak Against AI":None,
+            "Current Win Streak Against AI":None,
+            "Average Number of Moves to Win Against AI":None,
+            "Average Number of Moves to Win Against AI Count":None,
+            "Average Number of Moves to Win Against AI Sum":None,
+            "Total Number of Wins Against Players":None,
+            "Total Number of Draws Against Players":None,
+            "Total Number of Losses Against Players":None,
+            "Total Number of Games Played Against Players":None,
+            "Highest Win Streak Against Players":None,
+            "Current Win Streak Against Players":None,
+            "Average Number of Moves to Win Against Players":None,
+            "Average Number of Moves to Win Against Players Count":None,
+            "Average Number of Moves to Win Against Players Sum":None
+        } 
 
 
     # Get
@@ -15,8 +34,8 @@ class AccountSlot():
     def getDatabase(self):
         return self.__database
 
-    def getUserDatabaseID(self):
-        return self.__userDatabaseID
+    def getAccountID(self):
+        return self.__AccountID
 
     def getColour(self):
         return self.__colour
@@ -35,8 +54,8 @@ class AccountSlot():
     def setDatabase(self, databaseObject):
         self.__database = databaseObject
 
-    def setUserDatabaseID(self, ID):
-        self.__userDatabaseID = ID
+    def setAccountID(self, ID):
+        self.__AccountID = ID
 
     def setColour(self, colour):
         self.__colour = colour
@@ -50,11 +69,11 @@ class AccountSlot():
     
 
     # Other
-    def clear(self): # Clear the account slot information when the account is signed out, ready for next account to sign in
+    def signOut(self): # Clear the account slot information when the account is signed out, ready for next account to sign in
         self.__username = None
-        self.__userDatabaseID = None
+        self.__AccountID = None
         self.__colour = None
-        self.__accountStats = {}
+        self.__accountStats = dict.fromkeys(self.__accountStats, None)
 
     def signUp(self, username, password):
         self.__database.addNewUser(username, password)
