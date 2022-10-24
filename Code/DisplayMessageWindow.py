@@ -18,7 +18,7 @@ def displayMessage(window, enableBackButton, enableBackToMenuButton, text):
     while running:
         window.blit(MENU_BACKGROUND_IMAGE, (0,0))
 
-        messageFont = pygame.font.SysFont("britannic", int(WIDTH*0.05)) # Get font using system fonts
+        messageFont = pygame.font.SysFont("britannic", int(WIDTH*0.04)) # Get font using system fonts
         message = messageFont.render(text, 1, BEIGE)
         window.blit(message, message.get_rect(center=(WIDTH*0.5, HEIGHT*0.5)))
 

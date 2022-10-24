@@ -45,8 +45,10 @@ class AccountSlot:
         return self.__accountStats
 
     def getAnAccountStat(self, statKey): # Return a specific stat from the dictionary
-        return self.__accountStats
-    
+        try:
+            return self.__accountStats[statKey]
+        except KeyError: # Return None if given key doesn't exist
+            return None
 
     # Set
     def setUsername(self, username):
@@ -76,18 +78,18 @@ class AccountSlot:
             return None # No account with that username and password was found 
         else: # Get the information for the account and update the slot to store it
             accountInformation = self.__database.getAccountInformation(username, password) # tuple of info 
-
+            print(accountInformation)
             # Update slot information with account information
             self.setUsername(accountInformation[0][1])
             self.setAccountID(accountInformation[0][0])
-            self.setAnAccountStat("Date Created", accountInformation[0][4])
+            self.setAnAccountStat("Date Created", accountInformation[0][3])
             self.setAnAccountStat("Total Number of Wins Against AI", accountInformation[0][6])
             self.setAnAccountStat("Total Number of Draws Against AI", accountInformation[0][7])
             self.setAnAccountStat("Total Number of Losses Against AI", accountInformation[0][8])
             self.setAnAccountStat("Total Number of Games Played Against AI", accountInformation[0][9])
             self.setAnAccountStat("Highest Win Streak Against AI", accountInformation[0][10])
             self.setAnAccountStat("Current Win Streak Against AI", accountInformation[0][11])
-            self.setAnAccountStat("Average Number of Moves to Win Against AI", float(accountInformation[0][12]))
+            self.setAnAccountStat("Average Number of Moves to Win Against AI", accountInformation[0][12])
             self.setAnAccountStat("Average Number of Moves to Win Against AI Count", accountInformation[0][13])
             self.setAnAccountStat("Average Number of Moves to Win Against AI Sum", accountInformation[0][14])
             self.setAnAccountStat("Total Number of Wins Against Players", accountInformation[0][15])
@@ -99,7 +101,7 @@ class AccountSlot:
             self.setAnAccountStat("Average Number of Moves to Win Against Players", accountInformation[0][21])
             self.setAnAccountStat("Average Number of Moves to Win Against Players Count", accountInformation[0][22])
             self.setAnAccountStat("Average Number of Moves to Win Against Players Sum", accountInformation[0][23])
-            print(self.getAllAccountStats())
+            
             return False
             
 
