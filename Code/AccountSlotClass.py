@@ -50,6 +50,7 @@ class AccountSlot:
         except KeyError: # Return None if given key doesn't exist
             return None
 
+
     # Set
     def setUsername(self, username):
         self.__username = username

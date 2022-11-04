@@ -67,6 +67,7 @@ class Database:
         databaseCursor.close()
         databaseConnection.close()
 
+
     # Other
     def makeConnection(self): 
         return mysql.connector.connect(host = self.__host, user = self.__username, password = self.__password, database = self.__database)
@@ -118,7 +119,6 @@ class Database:
         usernameForPlaceholder = (username,) # Tuple needed for preparedQuery
         databaseCursor.execute(preparedQuery,usernameForPlaceholder)
         
-        boolean = None
         if databaseCursor.fetchall() == []:
             boolean = True
         else:

@@ -6,13 +6,6 @@ from Constants import (
 
 
 class Man:
-    __row = None
-    __column = None
-    __colour = None
-    __isKing = False
-    __x = None
-    __y = None
-
     def __init__(self, row, column, colour):
         self.__row = row
         self.__column = column

@@ -12,7 +12,7 @@ from Constants import (
 )
 
 
-class Board():
+class Board:
     __board = []
     __numOfColourOneLeft = 12
     __numOfColourTwoLeft = 12
