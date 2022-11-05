@@ -60,9 +60,6 @@ def accountAreaWindow(window, slotOne, slotTwo):
                     running = viewAccount(window, slotOne, slotTwo)
                 elif backButton.isOver(window, mousePos):
                     return
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return
     return
 
 def signIn(window, slotOne, slotTwo):
