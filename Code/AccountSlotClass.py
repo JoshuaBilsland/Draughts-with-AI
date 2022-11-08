@@ -79,7 +79,6 @@ class AccountSlot:
             return None # No account with that username and password was found 
         else: # Get the information for the account and update the slot to store it
             accountInformation = self.__database.getAccountInformation(username, password) # tuple of info 
-            print(accountInformation)
             # Update slot information with account information
             self.setUsername(accountInformation[0][1])
             self.setAccountID(accountInformation[0][0])

@@ -68,7 +68,7 @@ def signIn(window, slotOne, slotTwo):
         returnValue = ChooseSlotWindow.chooseSlot(window, slotOne, slotTwo)
         if returnValue != True:
             chosenSlot = returnValue
-            if chosenSlot.getAccountID() == None: # Check the slot is available (an account is not already signed into it)
+            if chosenSlot.getAccountID() == None: # Check the slot is available (an account is not already signed in to it)
                 correctUsernameAndPassword = False  # Run until a correct username & password have been submitted
                 while not correctUsernameAndPassword:
                     returnValue = GetUsernameAndPasswordWindow.getUsernameAndPassword(window, "Sign In", slotOne, slotTwo)
@@ -84,7 +84,7 @@ def signIn(window, slotOne, slotTwo):
                     else:
                         correctUsernameAndPassword = True # End loop so goes back to ChooseSlotWindow (loop restarts)
             else: # Slot not available - display error message then continue loop when back button clicked
-                DisplayMessageWindow.displayMessage(window, True, False, "Account Already Signed into This Slot")
+                DisplayMessageWindow.displayMessage(window, True, False, "Account Already Signed in to This Slot")
         elif returnValue: # Back button was clicked, return to account area window
             return True
         

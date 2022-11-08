@@ -17,11 +17,13 @@ class Button:
     # Other
     def draw(self, window): # Draw the button onto a window
         pygame.draw.rect(window, self.__colour, (self.__x, self.__y, self.__width, self.__height), 0)
+        
         # Draw 3D edge effect
-        pygame.draw.line(window, WHITE, (self.__x, self.__y), (self.__x + self.__width, self.__y),2)
-        pygame.draw.line(window, WHITE, (self.__x, self.__y), (self.__x, self.__y + self.__height), 2)
-        pygame.draw.line(window, BLACK, (self.__x, self.__y + self.__height), (self.__x + self.__width, self.__y + self.__height), 2)
-        pygame.draw.line(window, BLACK, (self.__x + self.__width, self.__y), (self.__x + self.__width, self.__y + self.__height), 2)
+        if self.__colour != BLACK and self.__colour != WHITE:
+            pygame.draw.line(window, WHITE, (self.__x, self.__y), (self.__x + self.__width, self.__y),2)
+            pygame.draw.line(window, WHITE, (self.__x, self.__y), (self.__x, self.__y + self.__height), 2)
+            pygame.draw.line(window, BLACK, (self.__x, self.__y + self.__height), (self.__x + self.__width, self.__y + self.__height), 2)
+            pygame.draw.line(window, BLACK, (self.__x + self.__width, self.__y), (self.__x + self.__width, self.__y + self.__height), 2)
         
         if self.__text == "Back" or self.__text == "Back to Menu":
             font = pygame.font.SysFont("britannic", int(self.__width*0.15)) # Use system fonts
@@ -39,6 +41,11 @@ class Button:
                 return True
         return False 
 
+    def drawSelectedLines(self, window, colour):
+            pygame.draw.line(window, colour, (self.__x, self.__y), (self.__x + self.__width, self.__y),2)
+            pygame.draw.line(window, colour, (self.__x, self.__y), (self.__x, self.__y + self.__height), 2)
+            pygame.draw.line(window, colour, (self.__x, self.__y + self.__height), (self.__x + self.__width, self.__y + self.__height), 2)
+            pygame.draw.line(window, colour, (self.__x + self.__width, self.__y), (self.__x + self.__width, self.__y + self.__height), 2)        
 
     
 

@@ -50,7 +50,7 @@ def mainMenuWindow(window, slotOne, slotTwo):
             elif event.type == pygame.MOUSEBUTTONDOWN: # Work out where the user clicked and if something should happen (Did they click a button?)
                 mousePos = pygame.mouse.get_pos()
                 if startGameButton.isOver(window, mousePos): 
-                    GameAreaWindow.gameWindow(window,  slotOne, slotTwo) # Subroutine that handles the game (getting game mode, selecting game options, carrying out game, etc)
+                    GameAreaWindow.gameAreaWindow(window,  slotOne, slotTwo) # Subroutine that handles the game (getting game mode, selecting game options, carrying out game, etc)
                 elif accountsButton.isOver(window, mousePos):
                     AccountAreaWindow.accountAreaWindow(window, slotOne, slotTwo) # Subroutine that is used to sign in, out, up, and view account stats
                 elif quitButton.isOver(window, mousePos):

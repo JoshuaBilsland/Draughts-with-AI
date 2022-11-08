@@ -22,11 +22,11 @@ def getUsernameAndPassword(window, textForButton, slotOne, slotTwo):
     
     inputFont = pygame.font.SysFont("britannic", 20) # Set font for text the user enters
 
-    # Text is only entered into a field/box if it is selected (The user has clicked on it), Start with neither selected
+    # Text is only entered in to a field/box if it is selected (The user has clicked on it), Start with neither selected
     usernameInputSelected = False
     passwordInputSelected = False
     
-    # Create the rect objects which text is 'entered into' (displayed on)
+    # Create the rect objects which text is 'entered in to' (displayed on)
     usernameInputBox = pygame.Rect(WIDTH*0.125, HEIGHT*0.2, WIDTH*0.75, 40)
     passwordInputBox = pygame.Rect(WIDTH*0.125, HEIGHT*0.5, WIDTH*0.75, 40)
 
@@ -79,7 +79,7 @@ def getUsernameAndPassword(window, textForButton, slotOne, slotTwo):
             if event.type == pygame.QUIT: # Check if the close button in the top right is clicked
                 quit() # End the program
 
-            elif event.type == pygame.MOUSEBUTTONDOWN: # Check if the user clicked on an input box - select it so they can enter text into it
+            elif event.type == pygame.MOUSEBUTTONDOWN: # Check if the user clicked on an input box - select it so they can enter text in to it
                 mousePos = pygame.mouse.get_pos()
                 if mainButton.isOver(window, mousePos):
                     return usernameInputString, passwordInputString

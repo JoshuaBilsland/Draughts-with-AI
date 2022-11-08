@@ -1,7 +1,6 @@
 import pygame
 import ButtonClass
 from Constants import (
-    WIDTH, 
     HEIGHT, 
     REGULAR_BUTTON_WIDTH, 
     REGULAR_BUTTON_HEIGHT,
