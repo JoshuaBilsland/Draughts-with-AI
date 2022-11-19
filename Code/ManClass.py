@@ -45,8 +45,8 @@ class Man:
         if self.__isKing == True:
             window.blit(CROWN, (self.__x - CROWN.get_width()/2, self.__y - CROWN.get_height()/2))
 
-    def move(self, row, column):
-        self.__row = row
-        self.__column = column
-        self.__x = self.determineX()
+    def move(self, newRow, newColumn):	
+        self.__row = newRow	
+        self.__column = newColumn	
+        self.__x = self.determineX()	
         self.__y = self.determineY()
