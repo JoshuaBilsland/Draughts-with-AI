@@ -7,41 +7,47 @@ from Constants import (
 )
 
 class Game:
-    __window = None
-    __gameMode = None
-    __turn = None
-    __board = None
-    __selectedMan = 0
-    __legalMoves = []
-    __slotOne = None   # turn = slot = [dbID, colour]
-    __slotTwo = None
-    __gameFinished = False
-
-    def __init__(self, window, slotOne="None", slotTwo="None"):
+    def __init__(self, window, chosenGameMode, chosenColour, slotOne="None", slotTwo="None", AIDifficulty="None"):
         self.__window = window
+        self.__gameMode = chosenGameMode
         self.__board = BoardClass.Board()
-        self.__slotOne = slotOne
+        self.__selectedMan = None 
+        self.__legalMoves = []
+        self.__slotOne = slotOne # None is used if the slot is not being used (for example, PvAI will have only one slot being used)
         self.__slotTwo = slotTwo
-        self.__turn = self.__slotOne
+        self.__gameFinished = False
+        self.__AIDifficulty = AIDifficulty # None is used if the game mode is PvP and not PvAI (since in PvP they AI isn't used)
         
-        # 1 = Playing against an AI. 2 = Playing against another player
-        if self.__slotOne == None or self.__slotTwo == None:
-            self.__gameMode = 2
-        else:
-            self.__gameMode = 1
+        # Determine who should go first (whose turn)
+        if self.__gameMode == "PvP":
+            if chosenColour == COLOUR_ONE:
+                self.__turn = self.__slotOne, COLOUR_ONE # colour one (black) chosen for slot one to play as, black/slotOne goes first
+            else:
+                self.__turn = self.__slotTwo, COLOUR_ONE # colour two (white) chosen for slot one to play as, black given to slot two and so slotTwo goes first
+        else: # gameMode == "PvAI"
+            if self.__slotOne != None: # slot one was passed, means that slot one was chosen for the player to play as against the AI (slotTwo will not be passed, None will be passed instead to show it is not being used)
+                if chosenColour == COLOUR_ONE:
+                    self.__turn = self.__slotOne, COLOUR_ONE # colour one (black) chosen for slot one to play as, black/slotOne goes first
+                else:
+                    self.__turn = "AI", COLOUR_ONE  # colour two (white) was chosen for slot one to play as, black given to the AI. Black/AI will go first
+            else: # slot two was passed, means that slot two was chosen for the player to play as against the AI (slotOne will not be passed, None will be passed instead to show it is not being used)
+                if chosenColour == COLOUR_ONE:
+                    self.__turn = self.__slotTwo, COLOUR_ONE
+                else:
+                    self.__turn = "AI", COLOUR_ONE        
 
 
     # Get
     def getLegalMoves(self):
         return self.__legalMoves
-
-    def getGameFinished(self):
-        return self.__gameFinished
     
     def getRowAndColumnFromPos(self, pos):
         row = int(pos[1] // SQUARE_SIZE)
         column = int(pos[0] // SQUARE_SIZE)
         return row, column
+
+    def getGameFinished(self):
+        return self.__gameFinished
 
 
     # Other
@@ -49,34 +55,20 @@ class Game:
         self.__board.drawBoard(self.__window)
         pygame.display.flip()
     
-    def processClick(self, pos): # Return True/False + carry out action depending on if the click is valid [Add stuff for if gameFinished == True]
-        if self.__selectedMan == 0 and self.__gameFinished == False:
-            rowAndColumn = self.getRowAndColumnFromPos(pos)
-            validSelection = self.selectMan(rowAndColumn[0], rowAndColumn[1])
-            print(self.__legalMoves)
-            if validSelection == True:
-                self.__board.drawLegalMoves(self.__legalMoves)
-        else: # self.__selectedMan != 0 and self.__gameFinished == False
-            self.__board.drawLegalMoves(self.__legalMoves)
-
-
-    # To-Do:
-
-  
-    # processClick needs to select the man, check the man is the right colour, display valid moves as small blue circles
-    # Tree traversal
-    # Find way to work out if the player is trying to make a move
-    # See selectMan point
-
-
+    def processClick(self, mousePos): # Return True/False + carry out action depending on if the click is valid [Add stuff for if gameFinished == True]
+        rowAndColumn = self.getRowAndColumnFromPos(mousePos)
+        if self.__selectedMan == None: # if no man is selected, check the user clicked a man and then select it (and get its legal moves)
+            if self.__board.getMan(rowAndColumn[0], rowAndColumn[1]) != 0: # check the user clicked a square that has a man in it (it is not empty)
+                self.selectMan(rowAndColumn[0], rowAndColumn[1])
 
     def selectMan(self, row, column): # Takes a row and column to check if a man exists on that square and what legal moves it can take
         self.__selectedMan = self.__board.getMan(row, column)
-        if self.__selectedMan != 0 and self.__selectedMan.getColour() == self.__turn[1]: # Checks if a man exists on that square
-            self.__legalMoves = self.__board.getLegalMoves(self.__selectedMan, self.__turn) # Get a list of legal moves
-            newMovesFound = True
-            # Use tree to find all moves + potentially combine with else to make one selectMan and avoid repeated code---------------------------------------------------------
-            validSelection = True
+        if self.__selectedMan != 0:  # Checks if a man exists on that square (0 means that it is an empty square)
+            if self.__selectedMan.getColour() == self.__turn[1]: # Check the selected man is the colour of whose turn it is
+                self.__legalMoves = self.__board.getLegalMoves(self.__selectedMan, self.__turn) # Get a list of legal moves
+                newMovesFound = True
+                # Use tree to find all moves + potentially combine with else to make one selectMan and avoid repeated code---------------------------------------------------------
+                validSelection = True
         else:
             self.__legalMoves = []
             validSelection = False

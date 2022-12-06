@@ -25,7 +25,7 @@ class Button:
             pygame.draw.line(window, BLACK, (self.__x, self.__y + self.__height), (self.__x + self.__width, self.__y + self.__height), 2)
             pygame.draw.line(window, BLACK, (self.__x + self.__width, self.__y), (self.__x + self.__width, self.__y + self.__height), 2)
         
-        if self.__text == "Back" or self.__text == "Back to Menu":
+        if self.__text == "Back" or self.__text == "Back to Menu" or self.__text == "Start":
             font = pygame.font.SysFont("britannic", int(self.__width*0.15)) # Use system fonts
             text = font.render(self.__text, True, BLACK)  # Apply font settings to the text  
             window.blit(text, (self.__x + (self.__width/2 - text.get_width()/2), self.__y + (self.__height/2 - text.get_height()/2)))
