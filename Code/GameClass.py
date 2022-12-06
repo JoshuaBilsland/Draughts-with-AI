@@ -7,7 +7,7 @@ from Constants import (
 )
 
 class Game:
-    def __init__(self, window, chosenGameMode, chosenColour, slotOne="None", slotTwo="None", AIDifficulty="None"):
+    def __init__(self, window, chosenGameMode, chosenColour, slotOne=None, slotTwo=None, AIDifficulty=None):
         self.__window = window
         self.__gameMode = chosenGameMode
         self.__board = BoardClass.Board()
@@ -85,11 +85,33 @@ class Game:
 
 
     def endTurn(self):
-        if self.__turn == COLOUR_ONE:
-            self.__turn == COLOUR_TWO
-        else:
-            self.__turn == COLOUR_ONE
+        # Change slot/player/ai
+        if self.__gameMode == "PvP":
+            if self.__turn[0] == self.__slotOne: # slotOne -> slotTwo
+                self.__turn[0] = self.__slotTwo
+            else: # slotTwo -> slotOne
+                self.__turn[0] = self.__slotOne
 
-        
+        else: # gameMode == "PvAI"
+            if self.__turn[0] == self.__slotOne or self.__turn[0] == self.__slotTwo:
+                self.__turn[0] = "AI" # AI's Turn
+            else: # == "AI"
+                # Check which slot is being used
+                if self.__slotOne != None:
+                    # slot one is being used
+                    self.__turn[0] = self.__slotOne # AI -> slotOne
+                else:
+                    # slotTwo is being used
+                    self.__turn[0] = self.__slotTwo # AI -> slotTwo
+
+        # Change colour
+        if self.__turn[1] == COLOUR_ONE: # colourOne -> colourTwo
+            self.__turn[1] = COLOUR_TWO
+        else: # colourTwo -> colourOne
+            self.__turn[1] = COLOUR_ONE
+
+        # Carry out AI turn (if needed)
+        if self.__turn[0] == "AI":
+            self.AIMove()         
 
             
