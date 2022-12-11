@@ -1,6 +1,5 @@
 import pygame
 import ManClass
-import Tree
 from Constants import (
     ROWS,
     COLUMNS,
@@ -91,21 +90,20 @@ class Board:
     def drawLegalMoves(self, legalMoves): # Draw circles to show the player what legal moves they can make ---------------------------------------------------------------------------------------------------
         print()
 
-    def getLegalMoves(self, man, moveNumber, slot): # moveNumber is for if a player makes multiple moves (captures) in one turn since this will change what makes a move legal (must capture again)
+    def getLegalMoves(self, man, row, column, moveNumber, turnColour): # moveNumber is for if a player makes multiple moves (captures) in one turn since this will change what makes a move legal (must capture again)
         legalMoves = []
-        if slot != None: # If it is a real player's turn 
-            if slot[1] == COLOUR_ONE: # Determines which colour the man/king can take (Opposite colour to the player)
-                temp = self.getLegalMovesDown(COLOUR_TWO, moveNumber, man.getRow(), man.getColumn())
-                for move in temp:
-                    legalMoves.append(move) 
-            else: # If they are COLOUR_TWO
-                temp = self.getLegalMovesUp(COLOUR_ONE, moveNumber, man.getRow(), man.getColumn())
-                for move in temp:
-                    legalMoves.append(move) 
-        
-        else: # If it is an AI's turn
-            coordinates = self.getAllMenCoordinates()
-
+        isKing = man.getIsKing() # If true, check up and down since it can move both directions
+    
+        if turnColour == COLOUR_ONE:
+            moves = self.getLegalMovesDown(COLOUR_TWO, moveNumber, row, column)
+            if isKing:
+                moves += self.getLegalMovesUp(COLOUR_TWO, moveNumber, row, column)
+        elif turnColour == COLOUR_TWO:
+            moves = self.getLegalMovesUp(COLOUR_ONE, moveNumber, row, column)
+            if isKing:
+                moves += self.getLegalMovesDown(COLOUR_ONE, moveNumber, row, column)
+        for move in moves:
+            legalMoves.append(move)
         return legalMoves
 
     def getLegalMovesDown(self, oppositeManColour, moveNumber, row, column): # Make a list of all valid moves that could be made if the man was to move down the board

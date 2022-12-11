@@ -1,5 +1,6 @@
 import pygame
 import BoardClass
+import TreeClass
 from Constants import (
     COLOUR_ONE, 
     COLOUR_TWO, 
@@ -65,10 +66,15 @@ class Game:
         self.__selectedMan = self.__board.getMan(row, column)
         if self.__selectedMan != 0:  # Checks if a man exists on that square (0 means that it is an empty square)
             if self.__selectedMan.getColour() == self.__turn[1]: # Check the selected man is the colour of whose turn it is
-                self.__legalMoves = self.__board.getLegalMoves(self.__selectedMan, self.__turn) # Get a list of legal moves
-                newMovesFound = True
-                # Use tree to find all moves + potentially combine with else to make one selectMan and avoid repeated code---------------------------------------------------------
-                validSelection = True
+                self.__legalMoves = TreeClass.TreeNode([self.__selectedMan.getRow(), self.__selectedMan.getColumn()]) # Tree nodes store legal moves, root is the starting row and column of the selected man
+                initialMoves = self.__board.getLegalMoves(self.__selectedMan, self.__selectedMan.getRow(), self.__selectedMan.getColumn, 1, self.__turn[1]) # Moves that can be made from where the man currently is (opening moves)
+                # Add the moves as children of the root (man starting position)
+                for move in initialMoves:
+                    self.__legalMoves.addChild(move)
+
+                # Get moves that can be made after the opening moves (if any), and then moves after those moves (if any), and so on
+
+                
         else:
             self.__legalMoves = []
             validSelection = False

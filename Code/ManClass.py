@@ -24,7 +24,9 @@ class Man:
 
     def getColour(self):
         return self.__colour
-       
+
+    def getIsKing(self):
+        return self.__isKing       
         
     # Other
     def determineX(self):
