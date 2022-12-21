@@ -63,7 +63,7 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
         game.updateDisplay() # Keep refreshing screen/frame
 
         # Check if game needs to end
-        if game.getGameFinished() == True:
+        if game.getGameFinished():
             #---------------game.handleGameEnd()
             running = False
         else:
