@@ -41,7 +41,7 @@ class Board:
                         self.__board[row].append(0)
 
 
-    def drawBoard(self, window): # Draw the board squares and the men
+    def drawBoard(self, window, legalMoves, lastMoveMade): # Draw the board squares and the men
         # Draw board pattern
         for row in range(ROWS):
             for column in range(COLUMNS):
@@ -55,14 +55,20 @@ class Board:
                         pygame.draw.rect(window, BROWN, (row * SQUARE_SIZE, column * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
                     else:
                         pygame.draw.rect(window, BEIGE, (row * SQUARE_SIZE, column * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
         # Draw men onto the board
         for row in range(ROWS):
             for column in range(COLUMNS):
                 if self.__board[row][column] != 0:
                     self.__board[row][column].draw(window)
         
-        #self.drawLegalMoves(legalMoves) # Draw the legal moves onto the board
+        if legalMoves != None and lastMoveMade != None: # Draw circles to show possible legal moves to the user
+            
+            #-----------------------
+            # USE lastMoveMade TO KNOW WHAT TO DRAW (DEPTH)"
+            # draw legalmoves
 
+# Get
     def getBoard(self):
         return self.__board
 
@@ -78,6 +84,7 @@ class Board:
                         coordinates.append([row, column])
         return coordinates
 
+# Other
     def moveMan(self, man, newRow, newColumn): # Move a man object to a different position in the board list
         oldRow = man.getRow()
         oldColumn = man.getColumn()
@@ -87,15 +94,13 @@ class Board:
         if newRow == 0 or newRow == (ROWS-1): # If the man gets to the other side of the board, make it a king
             man.makeKing() 
 
-    def drawLegalMoves(self, legalMoves): # Draw circles to show the player what legal moves they can make ---------------------------------------------------------------------------------------------------
-        print()
-
     def wouldMakeKing(self, newRow): # Used to check if a legal move would make a man turn into a king
         boolean = False
         if newRow == 0 or newRow == (ROWS-1):
             boolean = True
         return boolean
 
+# Getting legal moves for a man/king
     def getLegalMoves(self, moveNumber, isKing, row, column, turnColour): # moveNumber is for if a player makes multiple moves (captures) in one turn since this will change what makes a move legal (must capture again)
         legalMoves = []
     

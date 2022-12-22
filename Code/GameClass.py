@@ -15,6 +15,7 @@ class Game:
         self.__board = BoardClass.Board()
         self.__selectedMan = None 
         self.__legalMoves = None
+        self.__lastMoveMade = None # Used to work out which possible move locations to display next + to work out if a user should be able to change the man/king they have selected (if they have made a move they should not be able to move another man/king)
         self.__slotOne = slotOne # None is used if the slot is not being used (for example, PvAI will have only one slot being used)
         self.__slotTwo = slotTwo
         self.__gameFinished = False
@@ -54,45 +55,45 @@ class Game:
 
     # Other
     def updateDisplay(self): # Update the window/display
-        self.__board.drawBoard(self.__window)
+        self.__board.drawBoard(self.__window, self.__legalMoves, self.__lastMoveMade)
         pygame.display.flip()
     
     def processClick(self, mousePos): # Return True/False + carry out action depending on if the click is valid [Add stuff for if gameFinished == True]
         rowAndColumn = self.getRowAndColumnFromPos(mousePos)
         if self.__selectedMan == None: # if no man is selected, check the user clicked a man and then select it (and get its legal moves)
-            if self.__board.getMan(rowAndColumn[0], rowAndColumn[1]) != 0: # check the user clicked a square that has a man in it (it is not empty)
+            # Checks if a man exists on that square (0 means that it is an empty square) + the man belongs to the person whose turn it is + the user should not be able to select a different man/king if they have already moved one this turn
+            if self.__board.getMan(rowAndColumn[0], rowAndColumn[1]) != 0 and self.__board.getMan(rowAndColumn[0], rowAndColumn[1]).getColour() == self.__turn[1] and self.__lastMoveMade == None: 
                 self.selectMan(rowAndColumn[0], rowAndColumn[1])
+                self.__selectedMan.setIsSelected(True)
+        elif self.__selectedMan != None and self.__legalMoves != None: # attempt to make a move (by clicking a tile to move the selected man to)
+            #----------------------------------------check move exists, [if] make move
+            print()
 
     def selectMan(self, row, column): # Takes a row and column to check if a man exists on that square and what legal moves it can take
         self.__selectedMan = self.__board.getMan(row, column)
-        if self.__selectedMan != 0:  # Checks if a man exists on that square (0 means that it is an empty square)
-            if self.__selectedMan.getColour() == self.__turn[1]: # Check the selected man is the colour of whose turn it is
-                self.__legalMoves = TreeNodeClass.TreeNode([self.__selectedMan.getRow(), self.__selectedMan.getColumn()]) # Tree nodes store legal moves, root is the starting row and column of the selected man
-                initialMoves = self.__board.getLegalMoves(1, self.__selectedMan.getIsKing(), self.__selectedMan.getRow(), self.__selectedMan.getColumn(), 1, self.__turn[1]) # Moves that can be made from where the man currently is (opening moves)
+        self.__legalMoves = TreeNodeClass.TreeNode([self.__selectedMan.getRow(), self.__selectedMan.getColumn()]) # Tree nodes store legal moves, root is the starting row and column of the selected man
+        initialMoves = self.__board.getLegalMoves(1, self.__selectedMan.getIsKing(), self.__selectedMan.getRow(), self.__selectedMan.getColumn(), 1, self.__turn[1]) # Moves that can be made from where the man currently is (opening moves)
+        queue = QueueClass.Queue(999) # Queue used for breadth-first traversal of the tree of possible moves
 
-                queue = QueueClass.Queue(999) # Queue used for breadth-first traversal of the tree of possible moves
+        # Add the moves as children of the root (man starting position)
+        for move in initialMoves:
+            self.__legalMoves.addChild(move)
 
-                # Add the moves as children of the root (man starting position)
-                for move in initialMoves:
-                    self.__legalMoves.addChild(move)
-
-                # Add the moves (now children nodes) into the queue (to check if further moves could be made via multi-capturing opponents men)
-                for moveChildNode in self.__legalMoves.getChildren():
+        # Add the moves (now children nodes) into the queue (to check if further moves could be made via multi-capturing opponents men)
+        for moveChildNode in self.__legalMoves.getChildren():
+            queue.enQueue(moveChildNode)
+            
+        # Get moves that can be made after the opening moves (if any), and then moves after those moves (if any), and so on (via tree, queue, and breadth-first traversal)
+        # -> the idea being that each level down the tree represents the next move that could be made that turn (multiple moves made via multi-captures of opponents men/kings)
+        while not queue.isEmpty():
+            nextMoveToCheck = queue.deQueue() # Get the next move from the queue, extract the newRow and newColumn (new position) and check if any moves can be made after this move (multi-captures)
+            if nextMoveToCheck[6]: # if capturesMan == True -> only check the mov/pos if it resulted in a piece being captured. Another move will only be possible if the previous captured a piece
+                nextMoves = self.__board.getLegalMoves(nextMoveToCheck[0], nextMoveToCheck[1], nextMoveToCheck[4], nextMoveToCheck[5], self.__turn[1])
+                for move in nextMoves: # add new moves as child nodes of the previous move
+                    nextMoveToCheck.addChild(move)
+                for moveChildNode in nextMoveToCheck.getChildren(): # add the moves to the queue (to check if any further moves could be made after any of them -> via breadth-first traversal)
                     queue.enQueue(moveChildNode)
-                    
-                # Get moves that can be made after the opening moves (if any), and then moves after those moves (if any), and so on (via tree, queue, and breadth-first traversal)
-                # -> the idea being that each level down the tree represents the next move that could be made that turn (multiple moves made via multi-captures of opponents men/kings)
-                while not queue.isEmpty():
-                    nextMoveToCheck = queue.deQueue() # Get the next move from the queue, extract the newRow and newColumn (new position) and check if any moves can be made after this move (multi-captures)
-                    if nextMoveToCheck[6]: # if capturesMan == True -> only check the mov/pos if it resulted in a piece being captured. Another move will only be possible if the previous captured a piece
-                        nextMoves = self.__board.getLegalMoves(nextMoveToCheck[0], nextMoveToCheck[1], nextMoveToCheck[4], nextMoveToCheck[5], self.__turn[1])
-                        for move in nextMoves: # add new moves as child nodes of the previous move
-                            nextMoveToCheck.addChild(move)
-                        for moveChildNode in nextMoveToCheck.getChildren(): # add the moves to the queue (to check if any further moves could be made after any of them -> via breadth-first traversal)
-                            queue.enQueue(moveChildNode)
-        else:
-            self.__legalMoves = None
-            self.__selectedMan = None
+
         
     def moveMan(self, newRow, newColumn): # Move a man to a new square
         if self.__selectedMan != 0 and (newRow, newColumn) in self.__legalMoves:
@@ -130,6 +131,8 @@ class Game:
 
         # Carry out AI turn (if needed)
         if self.__turn[0] == "AI":
-            self.AIMove()         
+            self.AIMove()
+
+        #------------------------Wipe selectedMan,legalMoves,lastMoveMade         
 
             
