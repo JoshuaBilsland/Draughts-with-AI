@@ -7,7 +7,8 @@ from Constants import (
     COLOUR_ONE, 
     COLOUR_TWO, 
     BEIGE, 
-    BROWN
+    BROWN,
+    BLUE
 )
 
 
@@ -62,12 +63,27 @@ class Board:
                 if self.__board[row][column] != 0:
                     self.__board[row][column].draw(window)
         
-        if legalMoves != None and lastMoveMade != None: # Draw circles to show possible legal moves to the user
-            
-            #-----------------------
-            # USE lastMoveMade TO KNOW WHAT TO DRAW (DEPTH)"
-            # draw legalmoves
+        if legalMoves != None: # Draw circles to show possible legal moves to the user
 
+            if lastMoveMade == None: # No moves made yet so display the moves (child nodes) of the root (starting position of the man/king)
+                movesToDisplay = []
+                for child in legalMoves.getChildren():
+                    movesToDisplay.append(child.getData())
+
+            
+            else: # Get the children (next potential moves, if any) of the last move made
+                movesToDisplay = []
+                for child in lastMoveMade.getChildren():
+                    movesToDisplay.append(child.getData())
+
+            # Display circles to show where the man/king would move to (if any moves are possible)
+            for move in movesToDisplay:
+                radius = (SQUARE_SIZE / 2) - 30
+                x = ((move[5]+1) * SQUARE_SIZE)-(SQUARE_SIZE/2) # Use newColumn to calculate X for the centre of where the circle will be
+                y = ((move[4]+1) * SQUARE_SIZE)-(SQUARE_SIZE/2) # use newRow to calculate Y for the centre of where the circle will be             
+                pygame.draw.circle(window, BLUE, (x, y), radius) # Draw a circle showing where the man/king could move to
+
+                
 # Get
     def getBoard(self):
         return self.__board

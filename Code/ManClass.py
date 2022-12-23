@@ -63,7 +63,6 @@ class Man:
         if self.__isKing: # Draw crown
             window.blit(CROWN, (self.__x - CROWN.get_width()/2, self.__y - CROWN.get_height()/2))
 
-
     def move(self, newRow, newColumn):	
         self.__row = newRow	
         self.__column = newColumn	

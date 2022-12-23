@@ -72,7 +72,7 @@ class Game:
     def selectMan(self, row, column): # Takes a row and column to check if a man exists on that square and what legal moves it can take
         self.__selectedMan = self.__board.getMan(row, column)
         self.__legalMoves = TreeNodeClass.TreeNode([self.__selectedMan.getRow(), self.__selectedMan.getColumn()]) # Tree nodes store legal moves, root is the starting row and column of the selected man
-        initialMoves = self.__board.getLegalMoves(1, self.__selectedMan.getIsKing(), self.__selectedMan.getRow(), self.__selectedMan.getColumn(), 1, self.__turn[1]) # Moves that can be made from where the man currently is (opening moves)
+        initialMoves = self.__board.getLegalMoves(1, self.__selectedMan.getIsKing(), self.__selectedMan.getRow(), self.__selectedMan.getColumn(), self.__turn[1]) # Moves that can be made from where the man currently is (opening moves)
         queue = QueueClass.Queue(999) # Queue used for breadth-first traversal of the tree of possible moves
 
         # Add the moves as children of the root (man starting position)
@@ -87,7 +87,7 @@ class Game:
         # -> the idea being that each level down the tree represents the next move that could be made that turn (multiple moves made via multi-captures of opponents men/kings)
         while not queue.isEmpty():
             nextMoveToCheck = queue.deQueue() # Get the next move from the queue, extract the newRow and newColumn (new position) and check if any moves can be made after this move (multi-captures)
-            if nextMoveToCheck[6]: # if capturesMan == True -> only check the mov/pos if it resulted in a piece being captured. Another move will only be possible if the previous captured a piece
+            if nextMoveToCheck.getData()[6]: # if capturesMan == True -> only check the mov/pos if it resulted in a piece being captured. Another move will only be possible if the previous captured a piece
                 nextMoves = self.__board.getLegalMoves(nextMoveToCheck[0], nextMoveToCheck[1], nextMoveToCheck[4], nextMoveToCheck[5], self.__turn[1])
                 for move in nextMoves: # add new moves as child nodes of the previous move
                     nextMoveToCheck.addChild(move)
