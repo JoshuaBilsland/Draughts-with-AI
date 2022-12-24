@@ -65,9 +65,46 @@ class Game:
             if self.__board.getMan(rowAndColumn[0], rowAndColumn[1]) != 0 and self.__board.getMan(rowAndColumn[0], rowAndColumn[1]).getColour() == self.__turn[1] and self.__lastMoveMade == None: 
                 self.selectMan(rowAndColumn[0], rowAndColumn[1])
                 self.__selectedMan.setIsSelected(True)
-        elif self.__selectedMan != None and self.__legalMoves != None: # attempt to make a move (by clicking a tile to move the selected man to)
-            #----------------------------------------check move exists, [if] make move
-            print()
+        
+        elif self.__selectedMan != None: # If a man/king is already selected
+            if self.__board.getMan(rowAndColumn[0], rowAndColumn[1]) != 0 and self.__board.getMan(rowAndColumn[0], rowAndColumn[1]).getColour() == self.__turn[1] and self.__lastMoveMade == None: # Unselect the currently selected man, reset required variables, select the new man
+                self.__selectedMan.setIsSelected(False)
+                self.__legalMoves = None
+                self.__lastMoveMade = None
+                self.selectMan(rowAndColumn[0], rowAndColumn[1])
+                self.__selectedMan.setIsSelected(True)
+
+            elif self.__board.getMan(rowAndColumn[0], rowAndColumn[1]) == 0: # If the user clicks an empty square, work out if the selected man should be unselected or if a move should be made (check if the square is a destination of a legal move)
+                if self.__lastMoveMade == None: # If lastMoveMade is None, get the children (legal moves) from the root node (starting position) and check those moves (to see if the square the user clicked is where the man/king will move to if that move is made)
+                    movesToCheck = []
+                    for child in self.__legalMoves.getChildren():
+                        movesToCheck.append(child.getData())
+                    
+                else: # The user has made a move and so check the children (next legal moves) of that move and check those moves (to see if the square the user clicked is where the man/king will move to if that move is made)
+                    movesToCheck = []
+                    for child in self.__lastMoveMade.getChildren():
+                        movesToCheck.append(child.getData())
+                
+                isDestination = False # Tracks if where the user clicked is a destination of a legal move (if it is, the move will be made, otherwise the selected man/king will be unselected (unless they have made a move already with it this turn))
+                for move in movesToCheck:
+                    moveNewRowToCheck = move[4]
+                    moveNewColumnToCheck = move[5]
+                    if moveNewRowToCheck == rowAndColumn[0] and moveNewColumnToCheck == rowAndColumn[1]:
+                        isDestination = True
+                
+                # Carry out the move OR unselect the man OR do nothing
+                if isDestination: # Carry out the move
+                    #---------------------
+                    # Finish move subroutine
+                    # Update endTurn
+                    # Update this
+                    #---------------------
+                    print("CARRY OUT MOVE ------------------------")
+                
+                elif not isDestination and self.__lastMoveMade == None: # The user has not made a move with the selected man/king yet so allow them to unselect it by clicking an empty square (unselect the man)
+                    self.__legalMoves = None
+                    self.__lastMoveMade = None
+                    self.__selectedMan.setIsSelected(False)
 
     def selectMan(self, row, column): # Takes a row and column to check if a man exists on that square and what legal moves it can take
         self.__selectedMan = self.__board.getMan(row, column)
