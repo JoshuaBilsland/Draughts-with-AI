@@ -101,14 +101,42 @@ class Board:
         return coordinates
 
 # Other
-    def moveMan(self, man, newRow, newColumn): # Move a man object to a different position in the board list
-        oldRow = man.getRow()
-        oldColumn = man.getColumn()
-        self.__board[oldRow][oldColumn], self.__board[newRow][newColumn] = self.__board[newRow][newColumn], self.__board[oldRow][oldColumn] # Swaps the values of the old and new square
-        man.move(newRow, newColumn) # Update the row and column class variables of the man object that has been moved
+    def makeMove(self, man, moveToMake): # Move a man object to a different position in the board list
+        oldRow = moveToMake[2]
+        oldColumn = moveToMake[3]
+        newRow = moveToMake[4]
+        newColumn = moveToMake[5]
 
-        if newRow == 0 or newRow == (ROWS-1): # If the man gets to the other side of the board, make it a king
-            man.makeKing() 
+        self.__board[newRow][newColumn] = self.__board[oldRow][oldColumn] # Move the man/king to the square it is moving to
+        self.__board[oldRow][oldColumn] = 0 # Remove the man/king from the square it started on
+        if moveToMake[1]: # If isKing == True, make the man into a king in case it is not one already (the move has just turned it into one), if it is already king, it will make it a king again (which won't have an impact)
+            man.setIsKing(True)
+        man.move(newRow, newColumn) # Update the row and column stored in the man object (which is used to determine a new y and x so the man/king can be drawn in the correct square)
+
+        # Check if the move captures an opponent man/king (and remove it from the board/game)
+        if moveToMake[6]: # If capturesMan == True
+            # Work out which man/king should be captured (using the difference of the new and old rows + columns to work out which square/opponent man/king was jumped over)
+            
+            # Work out which direction the move moved the man/king
+            if newRow > oldRow and newColumn > oldColumn: # Moved towards the bottom right/south-east
+                opponentRow = (newRow - 1)
+                opponentColumn = (newColumn - 1)
+            elif newRow > oldRow and newColumn < oldColumn: # Move towards the bottom left/south-west
+                print("SW")
+            elif newRow < oldRow and newColumn < oldColumn: # Moved towards the top left/north-west
+                print("NW")
+            elif newRow < oldRow and newColumn > oldColumn: # Moved towards the top right/north-east
+                print("NE")
+            
+            # Work out man/king colour and take 1 away from variable which keeps count of the men/kings left
+            if self.__board[opponentRow][opponentColumn].getColour() == COLOUR_ONE:
+                self.__numOfColourOneLeft -= 1
+            else:
+                self.__numOfColourTwoLeft -= 1
+
+            # Delete the man/king from the board
+            self.__board[opponentRow][opponentColumn] = 0
+
 
     def wouldMakeKing(self, newRow): # Used to check if a legal move would make a man turn into a king
         boolean = False

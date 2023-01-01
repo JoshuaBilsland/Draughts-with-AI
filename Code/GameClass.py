@@ -91,9 +91,11 @@ class Game:
                     moveNewColumnToCheck = move[5]
                     if moveNewRowToCheck == rowAndColumn[0] and moveNewColumnToCheck == rowAndColumn[1]:
                         isDestination = True
+                        moveToMake = move
                 
                 # Carry out the move OR unselect the man OR do nothing
                 if isDestination: # Carry out the move
+                    self.__board.makeMove(self.__selectedMan, moveToMake)
                     #---------------------
                     # Finish move subroutine
                     # Update endTurn
@@ -130,11 +132,6 @@ class Game:
                     nextMoveToCheck.addChild(move)
                 for moveChildNode in nextMoveToCheck.getChildren(): # add the moves to the queue (to check if any further moves could be made after any of them -> via breadth-first traversal)
                     queue.enQueue(moveChildNode)
-
-        
-    def moveMan(self, newRow, newColumn): # Move a man to a new square
-        if self.__selectedMan != 0 and (newRow, newColumn) in self.__legalMoves:
-            self.__board.moveMan(self.__selectedMan, newRow, newColumn)
     
     def AIMove(self): # Used to carry out an AI's move (get legal moves, work out best move, make move)
         print("temp----------------------------------------")
