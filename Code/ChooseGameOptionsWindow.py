@@ -85,6 +85,15 @@ def chooseGameOptions(window, gameMode, slotOne, slotTwo):
                 quit() # End the program
             elif event.type == pygame.MOUSEBUTTONDOWN: 
                 mousePos = pygame.mouse.get_pos()
+                if gameMode == "PvAI":
+                    if easyButton.isOver(window, mousePos):
+                        difficultySelected = 1
+                    elif averageButton.isOver(window, mousePos):
+                        difficultySelected = 2
+                    elif hardButton.isOver(window, mousePos):
+                        difficultySelected = 3 
+                    elif expertButton.isOver(window, mousePos):
+                        difficultySelected = 4
                 if manColourOneButton.isOver(window, mousePos):
                     # 'Select' colour -> draw red border lines to show it is selected
                     manColourOneButtonSelected = True
@@ -93,14 +102,6 @@ def chooseGameOptions(window, gameMode, slotOne, slotTwo):
                     # 'Select' colour -> draw red border lines to show it is selected
                     manColourTwoButtonSelected = True
                     manColourOneButtonSelected = False
-                elif easyButton.isOver(window, mousePos):
-                    difficultySelected = 1
-                elif averageButton.isOver(window, mousePos):
-                    difficultySelected = 2
-                elif hardButton.isOver(window, mousePos):
-                    difficultySelected = 3 
-                elif expertButton.isOver(window, mousePos):
-                    difficultySelected = 4
                 elif startButton.isOver(window, mousePos):
                     if areStartGameRequirementsMet(gameMode, manColourOneButtonSelected, manColourTwoButtonSelected, difficultySelected):
                         chosenOptions = [] # Used to store data to return

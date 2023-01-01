@@ -24,20 +24,20 @@ class Game:
         # Determine who should go first (whose turn)
         if self.__gameMode == "PvP":
             if chosenColour == COLOUR_ONE:
-                self.__turn = self.__slotOne, COLOUR_ONE # colour one (black) chosen for slot one to play as, black/slotOne goes first
+                self.__turn = [self.__slotOne, COLOUR_ONE] # colour one (black) chosen for slot one to play as, black/slotOne goes first
             else:
-                self.__turn = self.__slotTwo, COLOUR_ONE # colour two (white) chosen for slot one to play as, black given to slot two and so slotTwo goes first
+                self.__turn = [self.__slotTwo, COLOUR_ONE] # colour two (white) chosen for slot one to play as, black given to slot two and so slotTwo goes first
         else: # gameMode == "PvAI"
             if self.__slotOne != None: # slot one was passed, means that slot one was chosen for the player to play as against the AI (slotTwo will not be passed, None will be passed instead to show it is not being used)
                 if chosenColour == COLOUR_ONE:
-                    self.__turn = self.__slotOne, COLOUR_ONE # colour one (black) chosen for slot one to play as, black/slotOne goes first
+                    self.__turn = [self.__slotOne, COLOUR_ONE] # colour one (black) chosen for slot one to play as, black/slotOne goes first
                 else:
-                    self.__turn = "AI", COLOUR_ONE  # colour two (white) was chosen for slot one to play as, black given to the AI. Black/AI will go first
+                    self.__turn = ["AI", COLOUR_ONE]  # colour two (white) was chosen for slot one to play as, black given to the AI. Black/AI will go first
             else: # slot two was passed, means that slot two was chosen for the player to play as against the AI (slotOne will not be passed, None will be passed instead to show it is not being used)
                 if chosenColour == COLOUR_ONE:
-                    self.__turn = self.__slotTwo, COLOUR_ONE
+                    self.__turn = [self.__slotTwo, COLOUR_ONE]
                 else:
-                    self.__turn = "AI", COLOUR_ONE        
+                    self.__turn = ["AI", COLOUR_ONE]        
 
 
     # Get
@@ -96,12 +96,19 @@ class Game:
                 # Carry out the move OR unselect the man OR do nothing
                 if isDestination: # Carry out the move
                     self.__board.makeMove(self.__selectedMan, moveToMake)
-                    #---------------------
-                    # Finish move subroutine
-                    # Update endTurn
-                    # Update this
-                    #---------------------
-                    print("CARRY OUT MOVE ------------------------")
+                    
+                    # Get move object
+                    if self.__lastMoveMade == None:
+                        for node in self.__legalMoves.getChildren():
+                            if node.getData() == moveToMake:
+                                self.__lastMoveMade = node
+                    else:
+                        for node in self.__lastMoveMade.getChildren():
+                            if node.getData() == moveToMake:
+                                self.__lastMoveMade = node
+
+                    if self.__lastMoveMade.getChildren() == []: # End turn if the player cannot make any more moves this turn
+                        self.endTurn()
                 
                 elif not isDestination and self.__lastMoveMade == None: # The user has not made a move with the selected man/king yet so allow them to unselect it by clicking an empty square (unselect the man)
                     self.__legalMoves = None
@@ -163,10 +170,18 @@ class Game:
         else: # colourTwo -> colourOne
             self.__turn[1] = COLOUR_ONE
 
+        # Wipe selectedMan,legalMoves,lastMoveMade
+        self.__selectedMan.setIsSelected(False)        
+        self.__selectedMan = None
+        self.__legalMoves = None
+        self.__lastMoveMade = None
+        
+
         # Carry out AI turn (if needed)
         if self.__turn[0] == "AI":
             self.AIMove()
 
-        #------------------------Wipe selectedMan,legalMoves,lastMoveMade         
+    def workOutIsGameFinished():
+        return False
 
             
