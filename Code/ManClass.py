@@ -16,7 +16,6 @@ class Man:
         self.__isKing = False
         self.__isSelected = False
 
-
     # Get
     def getRow(self):
         return self.__row
@@ -43,7 +42,6 @@ class Man:
 
     def setIsKing(self, boolean): # Used when a man is promoted into a king
         self.__isKing = boolean
-        self.draw() # Redrawing the man/king will now also draw the crown since isKing is True
             
 
     # Other

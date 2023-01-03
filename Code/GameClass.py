@@ -134,7 +134,7 @@ class Game:
         while not queue.isEmpty():
             nextMoveToCheck = queue.deQueue() # Get the next move from the queue, extract the newRow and newColumn (new position) and check if any moves can be made after this move (multi-captures)
             if nextMoveToCheck.getData()[6]: # if capturesMan == True -> only check the mov/pos if it resulted in a piece being captured. Another move will only be possible if the previous captured a piece
-                nextMoves = self.__board.getLegalMoves(nextMoveToCheck[0], nextMoveToCheck[1], nextMoveToCheck[4], nextMoveToCheck[5], self.__turn[1])
+                nextMoves = self.__board.getLegalMoves((nextMoveToCheck.getData()[0]+1), nextMoveToCheck.getData()[1], nextMoveToCheck.getData()[4], nextMoveToCheck.getData()[5], self.__turn[1])
                 for move in nextMoves: # add new moves as child nodes of the previous move
                     nextMoveToCheck.addChild(move)
                 for moveChildNode in nextMoveToCheck.getChildren(): # add the moves to the queue (to check if any further moves could be made after any of them -> via breadth-first traversal)
