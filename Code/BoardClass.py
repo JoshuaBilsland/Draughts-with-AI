@@ -100,6 +100,10 @@ class Board:
                         coordinates.append([row, column])
         return coordinates
 
+    def getNumOfColourOneLeft(self):
+        return self.__numOfColourOneLeft
+    def getNumOfColourTwoLeft(self):
+        return self.__numOfColourTwoLeft
 # Other
     def makeMove(self, man, moveToMake): # Move a man object to a different position in the board list
         oldRow = moveToMake[2]
@@ -260,5 +264,14 @@ class Board:
         
         return legalMoves
 
-     
+    def isPossibleMoves(self, colourToCheckFor): # Used to work out if a game is over or it should continue (checks for any possible legal moves, if some are found then the game could continue (depending on other factors))
+        # Check for any possible moves for the colour given
+        for row in range(ROWS):
+            for column in range(COLUMNS):
+                if self.__board[row][column] != 0:
+                    if self.__board[row][column].getColour() == colourToCheckFor:
+                        manToCheck = self.__board[row][column]
+                        if self.getLegalMoves(1, manToCheck.getIsKing(), manToCheck.getRow(), manToCheck.getColumn(), colourToCheckFor) != []:
+                            return True # A possible move was found
+        return False # No possible moves
 

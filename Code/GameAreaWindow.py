@@ -61,10 +61,9 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
     running = True
     while running:
         game.updateDisplay() # Keep refreshing screen/frame
-
         # Check if game needs to end
         if game.getGameFinished():
-            #---------------game.handleGameEnd()
+            information = game.getInformationForGameEnd()
             running = False
         else:
             # Event loop
@@ -74,3 +73,6 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                 if event.type == pygame.MOUSEBUTTONDOWN: # Get where the user clicked and see what should happen (if anything)
                     mousePos = pygame.mouse.get_pos()
                     game.processClick(mousePos)
+
+    # Handle Game End -> display winner, etc
+    print(information)

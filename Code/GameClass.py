@@ -5,7 +5,9 @@ import QueueClass
 from Constants import (
     COLOUR_ONE, 
     COLOUR_TWO, 
-    SQUARE_SIZE
+    SQUARE_SIZE,
+    ROWS,
+    COLUMNS
 )
 
 class Game:
@@ -19,6 +21,7 @@ class Game:
         self.__slotOne = slotOne # None is used if the slot is not being used (for example, PvAI will have only one slot being used)
         self.__slotTwo = slotTwo
         self.__gameFinished = False
+        self.__winner = None
         self.__AIDifficulty = AIDifficulty # None is used if the game mode is PvP and not PvAI (since in PvP they AI isn't used)
         
         # Determine who should go first (whose turn)
@@ -131,20 +134,43 @@ class Game:
             
         # Get moves that can be made after the opening moves (if any), and then moves after those moves (if any), and so on (via tree, queue, and breadth-first traversal)
         # -> the idea being that each level down the tree represents the next move that could be made that turn (multiple moves made via multi-captures of opponents men/kings)
+
+        isAlreadyKing = self.__selectedMan.getIsKing() # Used to check if the turn has just promoted the man to a king and therefore the turn should end (and any move after that should not be checked/checked for)
+        listOfMovesFound = [] # Used to make sure turn ends when a man is promoted to a king
         while not queue.isEmpty():
             nextMoveToCheck = queue.deQueue() # Get the next move from the queue, extract the newRow and newColumn (new position) and check if any moves can be made after this move (multi-captures)
+            print("---")
+            print(nextMoveToCheck.getData())
+            moveFound = nextMoveToCheck.getData()
+            listOfMovesFound.append([moveFound[2],moveFound[3], moveFound[4], moveFound[5]])
             if nextMoveToCheck.getData()[6]: # if capturesMan == True -> only check the mov/pos if it resulted in a piece being captured. Another move will only be possible if the previous captured a piece
                 nextMoves = self.__board.getLegalMoves((nextMoveToCheck.getData()[0]+1), nextMoveToCheck.getData()[1], nextMoveToCheck.getData()[4], nextMoveToCheck.getData()[5], self.__turn[1])
+                print("NEXT MOVES", nextMoves)
                 for move in nextMoves: # add new moves as child nodes of the previous move
-                    nextMoveToCheck.addChild(move)
+                    moveChildNodeData = move
+                    reversedNewAndOldRowAndColumn = [move[4],move[5],move[2],move[3]] # Reverses the old and new row and column to check if the moves discovered is just going back over a piece that WOULD have been taken (see below)
+                    if reversedNewAndOldRowAndColumn in listOfMovesFound: # Stops the king being able to go back and forth over the same piece (it will keep finding the legal moves to do this since while it is finding legal moves, none of the opponents man/king will actually be removed from the board. This means it will jump over a man/king and then discover the move to go back over it.) 
+                        pass
+                    else:
+                        nextMoveToCheck.addChild(move)
                 for moveChildNode in nextMoveToCheck.getChildren(): # add the moves to the queue (to check if any further moves could be made after any of them -> via breadth-first traversal)
-                    queue.enQueue(moveChildNode)
+                    moveChildNodeData = moveChildNode.getData()
+                    reversedNewAndOldRowAndColumn = [moveChildNodeData[4],moveChildNodeData[5],moveChildNodeData[2],moveChildNodeData[3]]
+                    if reversedNewAndOldRowAndColumn in listOfMovesFound:
+                        pass
+                    else:
+                        queue.enQueue(moveChildNode)
     
     def AIMove(self): # Used to carry out an AI's move (get legal moves, work out best move, make move)
         print("temp----------------------------------------")
 
 
-    def endTurn(self):
+    def endTurn(self):        
+        # Check if game is finished (someone has won or there is a draw)
+        checkResults = self.workOutIsGameFinished(self.__turn[1])
+        self.__gameFinished = checkResults[0]
+        self.__winner = checkResults[1]
+
         # Change slot/player/ai
         if self.__gameMode == "PvP":
             if self.__turn[0] == self.__slotOne: # slotOne -> slotTwo
@@ -175,13 +201,38 @@ class Game:
         self.__selectedMan = None
         self.__legalMoves = None
         self.__lastMoveMade = None
-        
 
         # Carry out AI turn (if needed)
-        if self.__turn[0] == "AI":
+        if self.__turn[0] == "AI" and self.__gameFinished == False:
             self.AIMove()
 
-    def workOutIsGameFinished():
-        return False
+    def workOutIsGameFinished(self, turnColour):
+        returnSet = []
 
+        # Check if side have had all their men/kings captured (the other side has won)
+        if self.__board.getNumOfColourOneLeft == 0:
+            returnSet.extend([True, COLOUR_TWO]) # Structure -> [isGameFinished, whoWon]
+        elif self.__board.getNumOfColourTwoLeft == 0:
+            returnSet.extend([True, COLOUR_ONE])
+        else:
+            # Check if their is a draw (check if no more moves are possible)
+            colourOneMovesPossible = self.__board.isPossibleMoves(COLOUR_ONE) # Store if any moves are possible for colour one
+            colourTwoMovesPossible = self.__board.isPossibleMoves(COLOUR_TWO)
+
+            if colourOneMovesPossible == False and colourTwoMovesPossible == False:
+                returnSet.extend([True, None]) # It is a draw since there are no more legal moves
+
+            elif colourOneMovesPossible == True and colourTwoMovesPossible != True:
+                returnSet.extend([True, COLOUR_ONE]) # Colour one has one since colour two cannot make any more moves
             
+            elif colourOneMovesPossible != True and colourTwoMovesPossible == True:
+                returnSet.extend([True, COLOUR_TWO]) # Colour two has one since colour one cannot make any more moves
+
+            else:
+                returnSet.extend([False, None]) # Game is not finished -> there are still men/kings left and possible legal moves for at least one of them
+        
+        print(returnSet)
+        return returnSet
+
+    def getInformationForGameEnd(self):
+        return self.__winner
