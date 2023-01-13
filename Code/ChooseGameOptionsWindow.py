@@ -106,9 +106,9 @@ def chooseGameOptions(window, gameMode, slotOne, slotTwo):
                     if areStartGameRequirementsMet(gameMode, manColourOneButtonSelected, manColourTwoButtonSelected, difficultySelected):
                         chosenOptions = [] # Used to store data to return
                         if manColourOneButtonSelected == True:
-                            chosenOptions.append("C1") # Colour one was chosen
+                            chosenOptions.append(COLOUR_ONE) # Colour one was chosen
                         else:
-                            chosenOptions.append("C2") # Colour two was chosen
+                            chosenOptions.append(COLOUR_TWO) # Colour two was chosen
                         if gameMode == "PvAI":
                             chosenOptions.append(difficultySelected)
                         return chosenOptions # Return the options that the user has chosen - Used to setup the game

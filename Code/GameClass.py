@@ -14,6 +14,7 @@ class Game:
     def __init__(self, window, chosenGameMode, chosenColour, slotOne=None, slotTwo=None, AIDifficulty=None):
         self.__window = window
         self.__gameMode = chosenGameMode
+        self.__chosenColour = chosenColour
         self.__board = BoardClass.Board()
         self.__selectedMan = None 
         self.__legalMoves = None
@@ -26,18 +27,18 @@ class Game:
         
         # Determine who should go first (whose turn)
         if self.__gameMode == "PvP":
-            if chosenColour == COLOUR_ONE:
+            if self.__chosenColour == COLOUR_ONE:
                 self.__turn = [self.__slotOne, COLOUR_ONE] # colour one (black) chosen for slot one to play as, black/slotOne goes first
             else:
                 self.__turn = [self.__slotTwo, COLOUR_ONE] # colour two (white) chosen for slot one to play as, black given to slot two and so slotTwo goes first
         else: # gameMode == "PvAI"
             if self.__slotOne != None: # slot one was passed, means that slot one was chosen for the player to play as against the AI (slotTwo will not be passed, None will be passed instead to show it is not being used)
-                if chosenColour == COLOUR_ONE:
+                if self.__chosenColour == COLOUR_ONE:
                     self.__turn = [self.__slotOne, COLOUR_ONE] # colour one (black) chosen for slot one to play as, black/slotOne goes first
                 else:
                     self.__turn = ["AI", COLOUR_ONE]  # colour two (white) was chosen for slot one to play as, black given to the AI. Black/AI will go first
             else: # slot two was passed, means that slot two was chosen for the player to play as against the AI (slotOne will not be passed, None will be passed instead to show it is not being used)
-                if chosenColour == COLOUR_ONE:
+                if self.__chosenColour == COLOUR_ONE:
                     self.__turn = [self.__slotTwo, COLOUR_ONE]
                 else:
                     self.__turn = ["AI", COLOUR_ONE]        
@@ -55,6 +56,8 @@ class Game:
     def getGameFinished(self):
         return self.__gameFinished
 
+    def getWinner(self):
+        return self.__winner
 
     # Other
     def updateDisplay(self): # Update the window/display
@@ -139,13 +142,10 @@ class Game:
         listOfMovesFound = [] # Used to make sure turn ends when a man is promoted to a king
         while not queue.isEmpty():
             nextMoveToCheck = queue.deQueue() # Get the next move from the queue, extract the newRow and newColumn (new position) and check if any moves can be made after this move (multi-captures)
-            print("---")
-            print(nextMoveToCheck.getData())
             moveFound = nextMoveToCheck.getData()
             listOfMovesFound.append([moveFound[2],moveFound[3], moveFound[4], moveFound[5]])
             if nextMoveToCheck.getData()[6]: # if capturesMan == True -> only check the mov/pos if it resulted in a piece being captured. Another move will only be possible if the previous captured a piece
                 nextMoves = self.__board.getLegalMoves((nextMoveToCheck.getData()[0]+1), nextMoveToCheck.getData()[1], nextMoveToCheck.getData()[4], nextMoveToCheck.getData()[5], self.__turn[1])
-                print("NEXT MOVES", nextMoves)
                 for move in nextMoves: # add new moves as child nodes of the previous move
                     moveChildNodeData = move
                     reversedNewAndOldRowAndColumn = [move[4],move[5],move[2],move[3]] # Reverses the old and new row and column to check if the moves discovered is just going back over a piece that WOULD have been taken (see below)
@@ -169,7 +169,29 @@ class Game:
         # Check if game is finished (someone has won or there is a draw)
         checkResults = self.workOutIsGameFinished(self.__turn[1])
         self.__gameFinished = checkResults[0]
-        self.__winner = checkResults[1]
+        
+        print(self.__gameFinished)
+        if self.__gameFinished:
+            # Work out if a slot (and which one) or the AI won
+            if checkResults[1] == None:
+                self.__winner = None # Game ends but it was a draw so no winner
+            elif self.__gameMode == "PvP":
+                if checkResults[1] == self.__chosenColour:
+                    self.__winner = "S1" # slot one
+                else:
+                    self.__winner = "S2" # slot two
+            elif self.__gameMode == "PvAI": # gameMode == "PvAI"
+                if self.__slotOne != None: # Slot one was passed to be used against the AI
+                    if checkResults[1] == self.__chosenColour: # The colour that won is the won that slot one chose, means slotOne won
+                        self.__winner = "S1"
+                    else:
+                        self.__winner = "AI" # The colour that won was the one used by the AI (since the user did not choose to play as it), AI won
+                else: # Slot one was not passed so slot two must be being used
+                    if checkResults[1] == self.__chosenColour:
+                        self.__winner = "S2"
+                    else:
+                        self.__winner = "AI"
+        print("endTurn: ",self.__winner)
 
         # Change slot/player/ai
         if self.__gameMode == "PvP":
@@ -230,9 +252,6 @@ class Game:
 
             else:
                 returnSet.extend([False, None]) # Game is not finished -> there are still men/kings left and possible legal moves for at least one of them
-        
-        print(returnSet)
+        print("workOut: ",returnSet)
         return returnSet
 
-    def getInformationForGameEnd(self):
-        return self.__winner

@@ -4,7 +4,10 @@ import ChooseSlotWindow
 import ChooseGameModeWindow
 import ChooseGameOptionsWindow
 import GameClass
-
+from Constants import (
+    COLOUR_ONE,
+    COLOUR_TWO
+)
 def gameAreaWindow(window, slotOne, slotTwo):
     running = True
 
@@ -24,6 +27,7 @@ def gameAreaWindow(window, slotOne, slotTwo):
                     gameOptions = ChooseGameOptionsWindow.chooseGameOptions(window, chosenGameMode, slotOne, slotTwo)
                     if gameOptions != True: # not true means chosen options returned - True would mean that back button was clicked
                         runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions)
+                        running = False
                     else: # back button was clicked
                         running = True # go back to choose game mode window
 
@@ -41,6 +45,7 @@ def gameAreaWindow(window, slotOne, slotTwo):
                     gameOptions = ChooseGameOptionsWindow.chooseGameOptions(window, chosenGameMode, slotOne, slotTwo)
                     if gameOptions != True:# not true means chosen options returned - True would mean that back button was clicked
                         runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot)
+                        running = False
                     else: # back button was clicked
                         running = True # go back to choose game mode window
         else: # back button was clicked
@@ -63,7 +68,22 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
         game.updateDisplay() # Keep refreshing screen/frame
         # Check if game needs to end
         if game.getGameFinished():
-            information = game.getInformationForGameEnd()
+            winner = game.getWinner()
+            print("runGame: ",winner)
+            if winner == None:
+                message = "The Game Was a Draw"
+            elif winner == "AI":
+                message = "The AI Won the Game"
+            else: # One of the slots won
+                if winner == "S1": # slot one won
+                    winningSlot = slotOne
+                else:
+                    winningSlot = slotTwo
+                username = winningSlot.getUsername() # Get the username of the account in the winning slot
+                print(type(username))
+                message = str(username) + " Won the Game"
+
+            DisplayMessageWindow.displayMessage(window, False, True, message) # Used to display game results
             running = False
         else:
             # Event loop
@@ -73,6 +93,3 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                 if event.type == pygame.MOUSEBUTTONDOWN: # Get where the user clicked and see what should happen (if anything)
                     mousePos = pygame.mouse.get_pos()
                     game.processClick(mousePos)
-
-    # Handle Game End -> display winner, etc
-    print(information)
