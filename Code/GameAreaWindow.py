@@ -92,4 +92,6 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                     quit()
                 if event.type == pygame.MOUSEBUTTONDOWN: # Get where the user clicked and see what should happen (if anything)
                     mousePos = pygame.mouse.get_pos()
+                    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
                     game.processClick(mousePos)
+                    pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)

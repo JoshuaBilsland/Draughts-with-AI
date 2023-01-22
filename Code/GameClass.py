@@ -126,6 +126,9 @@ class Game:
         self.__legalMoves = TreeNodeClass.TreeNode([self.__selectedMan.getRow(), self.__selectedMan.getColumn()]) # Tree nodes store legal moves, root is the starting row and column of the selected man
         initialMoves = self.__board.getLegalMoves(1, self.__selectedMan.getIsKing(), self.__selectedMan.getRow(), self.__selectedMan.getColumn(), self.__turn[1]) # Moves that can be made from where the man currently is (opening moves)
         queue = QueueClass.Queue(999) # Queue used for breadth-first traversal of the tree of possible moves
+        
+        isAlreadyKing = self.__selectedMan.getIsKing() # Used to check if the turn has just promoted the man to a king and therefore the turn should end (and any move after that should not be checked/checked for)
+        listOfMovesFound = [] # Used to make sure turn ends when a man is promoted to a king
 
         # Add the moves as children of the root (man starting position)
         for move in initialMoves:
@@ -133,30 +136,38 @@ class Game:
 
         # Add the moves (now children nodes) into the queue (to check if further moves could be made via multi-capturing opponents men)
         for moveChildNode in self.__legalMoves.getChildren():
-            queue.enQueue(moveChildNode)
+            if moveChildNode.getData()[1] == True and isAlreadyKing == False:
+                # This move would promote the man to a king and so no further moves should be made (so don't enqueue to look for further moves)
+                print("Make King Move")
+                pass
+            else:
+                queue.enQueue(moveChildNode)
             
         # Get moves that can be made after the opening moves (if any), and then moves after those moves (if any), and so on (via tree, queue, and breadth-first traversal)
         # -> the idea being that each level down the tree represents the next move that could be made that turn (multiple moves made via multi-captures of opponents men/kings)
 
-        isAlreadyKing = self.__selectedMan.getIsKing() # Used to check if the turn has just promoted the man to a king and therefore the turn should end (and any move after that should not be checked/checked for)
-        listOfMovesFound = [] # Used to make sure turn ends when a man is promoted to a king
         while not queue.isEmpty():
             nextMoveToCheck = queue.deQueue() # Get the next move from the queue, extract the newRow and newColumn (new position) and check if any moves can be made after this move (multi-captures)
             moveFound = nextMoveToCheck.getData()
             listOfMovesFound.append([moveFound[2],moveFound[3], moveFound[4], moveFound[5]])
+
             if nextMoveToCheck.getData()[6]: # if capturesMan == True -> only check the mov/pos if it resulted in a piece being captured. Another move will only be possible if the previous captured a piece
                 nextMoves = self.__board.getLegalMoves((nextMoveToCheck.getData()[0]+1), nextMoveToCheck.getData()[1], nextMoveToCheck.getData()[4], nextMoveToCheck.getData()[5], self.__turn[1])
+
                 for move in nextMoves: # add new moves as child nodes of the previous move
-                    moveChildNodeData = move
                     reversedNewAndOldRowAndColumn = [move[4],move[5],move[2],move[3]] # Reverses the old and new row and column to check if the moves discovered is just going back over a piece that WOULD have been taken (see below)
                     if reversedNewAndOldRowAndColumn in listOfMovesFound: # Stops the king being able to go back and forth over the same piece (it will keep finding the legal moves to do this since while it is finding legal moves, none of the opponents man/king will actually be removed from the board. This means it will jump over a man/king and then discover the move to go back over it.) 
                         pass
                     else:
                         nextMoveToCheck.addChild(move)
+                
                 for moveChildNode in nextMoveToCheck.getChildren(): # add the moves to the queue (to check if any further moves could be made after any of them -> via breadth-first traversal)
                     moveChildNodeData = moveChildNode.getData()
                     reversedNewAndOldRowAndColumn = [moveChildNodeData[4],moveChildNodeData[5],moveChildNodeData[2],moveChildNodeData[3]]
                     if reversedNewAndOldRowAndColumn in listOfMovesFound:
+                        pass
+                    elif moveChildNodeData[1] == True and isAlreadyKing == False:
+                        # This move would promote the man to a king and so no further moves should be made (so don't enqueue to look for further moves)
                         pass
                     else:
                         queue.enQueue(moveChildNode)
