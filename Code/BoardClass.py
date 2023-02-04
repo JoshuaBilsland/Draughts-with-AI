@@ -104,6 +104,16 @@ class Board:
         return self.__numOfColourOneLeft
     def getNumOfColourTwoLeft(self):
         return self.__numOfColourTwoLeft
+
+    def getAllMen(self): # Return list of all man objects
+        men = []
+        for row in self.__board:
+            for column in self.__board:
+                if self.__board[row][column] != 0:
+                    men.append(self.__board[row][column])
+        return men
+                    
+
 # Other
     def makeMove(self, man, moveToMake): # Move a man object to a different position in the board list
         oldRow = moveToMake[2]

@@ -138,7 +138,6 @@ class Game:
         for moveChildNode in self.__legalMoves.getChildren():
             if moveChildNode.getData()[1] == True and isAlreadyKing == False:
                 # This move would promote the man to a king and so no further moves should be made (so don't enqueue to look for further moves)
-                print("Make King Move")
                 pass
             else:
                 queue.enQueue(moveChildNode)
@@ -172,6 +171,7 @@ class Game:
                     else:
                         queue.enQueue(moveChildNode)
     
+
     def AIMove(self): # Used to carry out an AI's move (get legal moves, work out best move, make move)
         print("temp----------------------------------------")
 
@@ -181,7 +181,6 @@ class Game:
         checkResults = self.workOutIsGameFinished(self.__turn[1])
         self.__gameFinished = checkResults[0]
         
-        print(self.__gameFinished)
         if self.__gameFinished:
             # Work out if a slot (and which one) or the AI won
             if checkResults[1] == None:
@@ -202,7 +201,6 @@ class Game:
                         self.__winner = "S2"
                     else:
                         self.__winner = "AI"
-        print("endTurn: ",self.__winner)
 
         # Change slot/player/ai
         if self.__gameMode == "PvP":
@@ -263,6 +261,5 @@ class Game:
 
             else:
                 returnSet.extend([False, None]) # Game is not finished -> there are still men/kings left and possible legal moves for at least one of them
-        print("workOut: ",returnSet)
         return returnSet
 

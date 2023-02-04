@@ -80,7 +80,6 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                 else:
                     winningSlot = slotTwo
                 username = winningSlot.getUsername() # Get the username of the account in the winning slot
-                print(type(username))
                 message = str(username) + " Won the Game"
 
             DisplayMessageWindow.displayMessage(window, False, True, message) # Used to display game results

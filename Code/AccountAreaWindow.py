@@ -1,5 +1,3 @@
-from re import L
-from xml.etree.ElementTree import TreeBuilder
 import pygame
 import ButtonClass
 import ChooseSlotWindow
