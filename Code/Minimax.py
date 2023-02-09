@@ -39,12 +39,11 @@ def scoreBoard(board): # Take a board object and score it (for the minimax algor
     return score
 
 def getLegalMovesAsList(board, man): # Return list of boards (each representing a legal move) (this is a modified version of selectMan() from Board.py)
-    deepCopyOfMan = copy.deepcopy(man)
-    moveTree = TreeNodeClass.TreeNode(deepCopyOfMan, deepCopyOfMan.getRow(), deepCopyOfMan.getColumn())
-    initialMoves = board.getLegalMoves(1, deepCopyOfMan.getIsKing(), deepCopyOfMan.getRow(), deepCopyOfMan.getColumn(), deepCopyOfMan.getColour())
+    moveTree = TreeNodeClass.TreeNode(man, man.getRow(), man.getColumn())
+    initialMoves = board.getLegalMoves(1, man.getIsKing(), man.getRow(), man.getColumn(), man.getColour())
     queue = QueueClass.Queue(999) 
 
-    isAlreadyKing = deepCopyOfMan.getIsKing()
+    isAlreadyKing = man.getIsKing()
     listOfMovesFound = []
 
     for move in initialMoves:
@@ -85,5 +84,14 @@ def getLegalMovesAsList(board, man): # Return list of boards (each representing 
     return moveTree, moveTreeRootToNodePaths
 
 
-def applyMove(move): # Take a move and return the board that would be generated as a result
-    pass
+def createAllEndOfTurnBoards(board, man, moveTreeRootToNodePaths): # Take moveTreeRootToNodePaths list and create a list of deep copied boards with each full path applied
+    endOfTurnBoards = []
+
+    for path in moveTreeRootToNodePaths:
+        boardDeepCopy = copy.deepcopy(board)
+        deepCopyOfMan = copy.deepcopy(man)
+        for move in path[-1:]: # 'path[-1:]' -> Skip the first item (root) because it is not a move
+            boardDeepCopy.makeMove(deepCopyOfMan, move)
+        endOfTurnBoards.append(boardDeepCopy)
+
+    return endOfTurnBoards
