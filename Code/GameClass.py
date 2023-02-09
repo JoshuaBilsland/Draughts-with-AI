@@ -170,6 +170,7 @@ class Game:
                         pass
                     else:
                         queue.enQueue(moveChildNode)
+        print(self.__legalMoves.getRootToLeafPaths(self.__legalMoves))
     
 
     def AIMove(self): # Used to carry out an AI's move (get legal moves, work out best move, make move)
