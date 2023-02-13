@@ -7,38 +7,62 @@ from Constants import(
     COLOUR_TWO
 )
 
-def minimax(board, isColourOne, depth, valueKingPromotion):
-    pass
+def minimax(board, isColourOne, depthForDifficulty, alpha, beta):
+    if not board.isPossibleMoves() or depthForDifficulty == 0:
+        return scoreBoard(board), []
 
-def scoreBoard(board): # Take a board object and score it (for the minimax algorithm)
-    allManObjects = board.getAllMen() # list of all man objects left on the board
-    
-    numberOfColourOneMen = 0
-    numberOfColourTwoMen = 0
-    
-    numberOfColourOneKings = 0
-    numberOfColourTwoKings = 0
+    bestMovePath = []
+    if isColourOne: # Max (Colour One is black)
+        bestMaxScore = -math.inf
+        allLegalMovePathsList = getAllMovePaths(board, COLOUR_ONE)
+        for movePath in allLegalMovePathsList:
+            man = board.getMan(movePath[0][0], movePath[0][1])
+            endOfTurnBoard = makeBoardDeepCopyFromMovePath(board, man, movePath)
+            currentScore, ignoredReturn = minimax(endOfTurnBoard, False, depthForDifficulty-1, alpha, beta)
+            if currentScore > bestMaxScore:
+                bestMaxScore = currentScore
+                bestMovePath = movePath
+            alpha = max(alpha, bestMaxScore)
+            if alpha >= beta:
+                break
+        return bestMaxScore, bestMovePath
 
-    for man in allManObjects:
-        manColour = man.getColour
-        manIsKing = man.isKing()
-        if manColour == COLOUR_ONE:
-            if manIsKing:
-                numberOfColourOneKings += 1
-            else:
-                numberOfColourOneMen += 1
-        else:
-            if manIsKing:
-                numberOfColourTwoKings += 1
-            else:
-                numberOfColourTwoMen += 1
+    else: # Min (Colour Two is white)
+        bestMinScore = math.inf
+        allLegalMovePathsList = getAllMovePaths(board, COLOUR_TWO)
+        for movePath in allLegalMovePathsList:
+            man = board.getMan(movePath[0][0], movePath[0][1])
+            endOfTurnBoard = makeBoardDeepCopyFromMovePath(board, man, movePath)
+            currentScore, ignoredReturn = minimax(endOfTurnBoard, True, depthForDifficulty-1, alpha, beta)
+            if currentScore < bestMinScore:
+                bestMinScore = currentScore
+                bestMovePath = movePath
+            beta = min(beta, bestMinScore)
+            if alpha >= beta:
+                break
+        return bestMinScore, bestMovePath
 
-    score = numberOfColourOneMen - numberOfColourTwoMen
-    score += (numberOfColourOneKings - numberOfColourTwoKings)*2
-    
-    return score
 
-def getLegalMovesAsList(board, man): # Return list of boards (each representing a legal move) (this is a modified version of selectMan() from Board.py)
+
+
+def getAllMovePaths(board, colour): # Get all possible move paths for all men/kings of the given colour
+    allMovePaths = []
+
+    allMen = board.getAllMen()
+    for man in allMen:
+        if man.getColour() == colour:
+            allMovePaths.extend(getLegalMovesAsMovePathList(board, man))
+
+    return allMovePaths
+
+def makeBoardDeepCopyFromMovePath(board, man, movePath):
+    boardDeepCopy = copy.deepCopy(board)
+    for move in movePath:
+        if len(move) != 2: # Ignore the first item in the movePath because it is the starting row and column of the man/king, not an actual move
+            boardDeepCopy.makeMove(man, move)
+    return boardDeepCopy
+
+def getLegalMovesAsMovePathList(board, man): # (this is a modified version of selectMan() from Board.py) Returns a legal move tree (tree is the same as selectMan()) and a list of all root to leaf paths in the tree (which represent a all complete move/s combinations that could be made in a turn)
     moveTree = TreeNodeClass.TreeNode(man, man.getRow(), man.getColumn())
     initialMoves = board.getLegalMoves(1, man.getIsKing(), man.getRow(), man.getColumn(), man.getColour())
     queue = QueueClass.Queue(999) 
@@ -80,18 +104,36 @@ def getLegalMovesAsList(board, man): # Return list of boards (each representing 
                 else:
                     queue.enQueue(moveChildNode)
     
-    moveTreeRootToNodePaths = moveTree.getRootToLeafPaths(moveTree)
-    return moveTree, moveTreeRootToNodePaths
+    return moveTree.getAllRootToLeafPaths(moveTree)
+
+def scoreBoard(board): # Take a board object and score it (for the minimax algorithm)
+    allManObjects = board.getAllMen() # list of all man objects left on the board
+    
+    numberOfColourOneMen = 0
+    numberOfColourTwoMen = 0
+    
+    numberOfColourOneKings = 0
+    numberOfColourTwoKings = 0
+
+    for man in allManObjects:
+        manColour = man.getColour
+        manIsKing = man.isKing()
+        if manColour == COLOUR_ONE:
+            if manIsKing:
+                numberOfColourOneKings += 1
+            else:
+                numberOfColourOneMen += 1
+        else:
+            if manIsKing:
+                numberOfColourTwoKings += 1
+            else:
+                numberOfColourTwoMen += 1
+
+    score = numberOfColourOneMen - numberOfColourTwoMen
+    score += (numberOfColourOneKings - numberOfColourTwoKings)*2
+    
+    return score
 
 
-def createAllEndOfTurnBoards(board, man, moveTreeRootToNodePaths): # Take moveTreeRootToNodePaths list and create a list of deep copied boards with each full path applied
-    endOfTurnBoards = []
 
-    for path in moveTreeRootToNodePaths:
-        boardDeepCopy = copy.deepcopy(board)
-        deepCopyOfMan = copy.deepcopy(man)
-        for move in path[-1:]: # 'path[-1:]' -> Skip the first item (root) because it is not a move
-            boardDeepCopy.makeMove(deepCopyOfMan, move)
-        endOfTurnBoards.append(boardDeepCopy)
 
-    return endOfTurnBoards

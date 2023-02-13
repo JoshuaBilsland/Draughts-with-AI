@@ -18,11 +18,11 @@ class TreeNode:
     def addChild(self, childData):
         self.__children.append(TreeNode(childData))
 
-    def getRootToLeafPaths(self, rootNode):
+    def getAllRootToLeafPaths(self, rootNode):
         paths = []
         queue = QueueClass.Queue(999)
         queue.enQueue((rootNode, [rootNode.getData()]))
-        
+
         while queue.isEmpty() == False:
             currentNode, path = queue.deQueue()
             if len(currentNode.getChildren()) == 0:

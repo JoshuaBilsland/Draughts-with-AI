@@ -91,15 +91,6 @@ class Board:
     def getMan(self, row, column): # Return the man object that is in the given square
         return self.__board[row][column]
 
-    def getAllMenCoordinates(self, colourToGet): # Return a list of all the coordinates of all the men of a certain colour, that are on the board
-        coordinates = []
-        for row in range(ROWS):
-            for column in range(COLUMNS):
-                if self.board[row][column] != 0: # Check the square is not empty
-                    if self.__board[row][column].getColour() == colourToGet: # Check that the man/king is the same colour that is being searched for
-                        coordinates.append([row, column])
-        return coordinates
-
     def getNumOfColourOneLeft(self):
         return self.__numOfColourOneLeft
     def getNumOfColourTwoLeft(self):
