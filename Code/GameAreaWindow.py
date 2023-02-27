@@ -69,7 +69,6 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
         # Check if game needs to end
         if game.getGameFinished():
             winner = game.getWinner()
-            print("runGame: ",winner)
             if winner == None:
                 message = "The Game Was a Draw"
             elif winner == "AI":

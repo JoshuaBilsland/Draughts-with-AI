@@ -13,12 +13,11 @@ from Constants import (
 
 
 class Board:
-    __board = []
-    __numOfColourOneLeft = 12
-    __numOfColourTwoLeft = 12
-
     # Creates a list of where the men are which is used to then draw the board in the window
     def __init__(self):
+        self.__board = []
+        self.__numOfColourOneLeft = 12
+        self.__numOfColourTwoLeft = 12
         for row in range(ROWS):
             self.__board.append([])
             for column in range(COLUMNS):
@@ -93,13 +92,14 @@ class Board:
 
     def getNumOfColourOneLeft(self):
         return self.__numOfColourOneLeft
+
     def getNumOfColourTwoLeft(self):
         return self.__numOfColourTwoLeft
 
     def getAllMen(self): # Return list of all man objects
         men = []
-        for row in self.__board:
-            for column in self.__board:
+        for row in range(ROWS):
+            for column in range(COLUMNS):
                 if self.__board[row][column] != 0:
                     men.append(self.__board[row][column])
         return men
@@ -135,7 +135,7 @@ class Board:
             elif newRow < oldRow and newColumn > oldColumn: # Moved towards the top right/north-east
                 opponentRow = (newRow + 1)
                 opponentColumn = (newColumn - 1)
-            
+        
             # Work out man/king colour and take 1 away from variable which keeps count of the men/kings left
             if self.__board[opponentRow][opponentColumn].getColour() == COLOUR_ONE:
                 self.__numOfColourOneLeft -= 1
@@ -155,7 +155,6 @@ class Board:
 # Getting legal moves for a man/king
     def getLegalMoves(self, moveNumber, isKing, row, column, turnColour): # moveNumber is for if a player makes multiple moves (captures) in one turn since this will change what makes a move legal (must capture again)
         legalMoves = []
-    
         if turnColour == COLOUR_ONE:
             moves = self.getLegalMovesDown(moveNumber, isKing, row, column, COLOUR_TWO)
             if isKing:
@@ -182,7 +181,7 @@ class Board:
             
             # Check if the square to the bottom left of the man/king is empty
             try: 
-                if self.__board[row+1][column-1] == 0:
+                if self.__board[row+1][column-1] == 0 and row+1 >= 0 and column-1 >= 0:
                     move = [moveNumber, isKing, row, column, row+1, column-1, False] # The list follows the structure: [moveNumber, isKing, oldRow, oldColumn, newRow, newColumn, capturesMan]. capturesMan is used to show if the move will capture a man
                     legalMoves.append(move)    
             except IndexError: # Handles the error that the square being checked doesn't exist
@@ -190,7 +189,7 @@ class Board:
             
             # Check if the square to the bottom right of the man/king is empty
             try: 
-                if self.__board[row+1][column+1] == 0:
+                if self.__board[row+1][column+1] == 0 and row+1 >= 0 and column+1 >= 0:
                     move = [moveNumber, isKing, row, column, row+1, column+1, False]
                     legalMoves.append(move)
             except IndexError: 
@@ -199,9 +198,9 @@ class Board:
         # Checks if a capture can be made to the left
         try: 
             square = self.__board[row+1][column-1]  # Get the contents of the square to the bottom left of the man/king
-            if square != 0: # If there is a man/king in the square
+            if square != 0 and row+1 >= 0 and column-1 >= 0: # If there is a man/king in the square
                 if square.getColour() == oppositeManColour: # Checks the colour of that man/king that is in that square
-                    if self.__board[row+2][column-2] == 0: # Checks if there is a free square to jump to (Over the opponent's man/king)
+                    if self.__board[row+2][column-2] == 0 and row+2 >= 0 and column-2 >= 0: # Checks if there is a free square to jump to (Over the opponent's man/king)
                         move = [moveNumber, isKing, row, column, row+2, column-2, True] # True is used to show that another move could potentially be made since this move results in a capture (Multi-capture)
                         legalMoves.append(move)
         except IndexError:   
@@ -210,9 +209,9 @@ class Board:
         # Checks if a capture can be made to the right
         try: 
             square = self.__board[row+1][column+1]
-            if square != 0:
+            if square != 0 and row+1 >= 0 and column+1 >= 0:
                 if square.getColour() == oppositeManColour:
-                    if self.__board[row+2][column+2] == 0:
+                    if self.__board[row+2][column+2] == 0 and row+2 >= 0 and column+2 >= 0:
                         move = [moveNumber, isKing, row, column, row+2, column+2, True]
                         legalMoves.append(move)
         except IndexError:
@@ -227,7 +226,7 @@ class Board:
         
             # Check if the square to the top left of the man/king is empty    
             try:
-                if self.__board[row-1][column-1] == 0:
+                if self.__board[row-1][column-1] == 0 and row-1 >= 0 and column-1 >= 0:
                     move = [moveNumber, isKing, row, column, row-1, column-1, False] # The list follows the structure: [moveNumber, isKing, oldRow, oldColumn, newRow, newColumn, capturesMan]. capturesMan is used to show if the move will capture a man                 
                     legalMoves.append(move)
             except IndexError: # Handles the error that the square being checked doesn't exist
@@ -235,7 +234,7 @@ class Board:
 
             # Check if the square to the top right of the man/king is empty
             try:
-                if self.__board[row-1][column+1] == 0:
+                if self.__board[row-1][column+1] == 0 and row-1 >= 0 and column+1 >= 0:
                     move = [moveNumber, isKing, row, column, row-1, column+1, False]
                     legalMoves.append(move)
             except IndexError:
@@ -244,9 +243,9 @@ class Board:
         # Checks if a capture can be made to the left
         try:
             square = self.__board[row-1][column-1] # Get the contents of the square to the top left of the man/king
-            if square != 0: # If there is a man/king in the square
+            if square != 0 and row-1 >= 0 and column-1 >= 0: # If there is a man/king in the square
                 if square.getColour() == oppositeManColour: # Checks the colour of that man/king that is in that square
-                    if self.__board[row-2][column-2] == 0: # Checks if there is a free square to jump to (Over the opponent's man/king)
+                    if self.__board[row-2][column-2] == 0 and row-2 >= 0 and column-2 >= 0: # Checks if there is a free square to jump to (Over the opponent's man/king)
                         move = [moveNumber, isKing, row, column, row-2, column-2, True] # True is used to show that another move could potentially be made since this move results in a capture (Multi-capture)
                         legalMoves.append(move)
         except IndexError:
@@ -255,9 +254,9 @@ class Board:
         # Checks if a capture can be made to the right
         try:
             square = self.__board[row-1][column+1]
-            if square != 0:
+            if square != 0 and row-1 >= 0 and column+1 >= 0:
                 if square.getColour() == oppositeManColour:
-                    if self.__board[row-2][column+2] == 0:
+                    if self.__board[row-2][column+2] == 0 and row-2 >= 0 and column+2 >= 0:
                         move = [moveNumber, isKing, row, column, row-2, column+2, True]
                         legalMoves.append(move)
         except IndexError:

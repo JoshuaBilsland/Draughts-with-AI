@@ -2,6 +2,9 @@ import pygame
 import BoardClass
 import TreeNodeClass
 import QueueClass
+import Minimax
+import math
+import copy
 from Constants import (
     COLOUR_ONE, 
     COLOUR_TWO, 
@@ -170,11 +173,25 @@ class Game:
                         pass
                     else:
                         queue.enQueue(moveChildNode)
-        print(self.__legalMoves.getRootToLeafPaths(self.__legalMoves))
-    
+
 
     def AIMove(self): # Used to carry out an AI's move (get legal moves, work out best move, make move)
-        print("temp----------------------------------------")
+        if self.__AIDifficulty == 1: # Easy
+            depthForDifficulty = 2
+        elif self.__AIDifficulty == 2: # Average
+            depthForDifficulty = 4
+        elif self.__AIDifficulty == 3: # Hard
+            depthForDifficulty = 6
+        elif self.__AIDifficulty == 4: # Expert 
+            depthForDifficulty = 8
+
+        if self.__turn[1] == COLOUR_ONE:
+            bestMovePath = Minimax.minimax(self.__board, True, depthForDifficulty, -math.inf, math.inf)
+        else:
+            bestMovePath = Minimax.minimax(self.__board, False, depthForDifficulty, -math.inf, math.inf)
+
+        self.__board = bestMovePath[1]
+        self.endTurn()
 
 
     def endTurn(self):        
@@ -203,6 +220,13 @@ class Game:
                     else:
                         self.__winner = "AI"
 
+        # Wipe selectedMan,legalMoves,lastMoveMade -> the AI does not use these so they do not need to be wiped
+        if not self.__turn[0] == "AI":
+            self.__selectedMan.setIsSelected(False)        
+            self.__selectedMan = None
+            self.__legalMoves = None
+            self.__lastMoveMade = None
+
         # Change slot/player/ai
         if self.__gameMode == "PvP":
             if self.__turn[0] == self.__slotOne: # slotOne -> slotTwo
@@ -227,12 +251,6 @@ class Game:
             self.__turn[1] = COLOUR_TWO
         else: # colourTwo -> colourOne
             self.__turn[1] = COLOUR_ONE
-
-        # Wipe selectedMan,legalMoves,lastMoveMade
-        self.__selectedMan.setIsSelected(False)        
-        self.__selectedMan = None
-        self.__legalMoves = None
-        self.__lastMoveMade = None
 
         # Carry out AI turn (if needed)
         if self.__turn[0] == "AI" and self.__gameFinished == False:
