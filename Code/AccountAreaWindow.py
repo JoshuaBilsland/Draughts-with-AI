@@ -146,7 +146,7 @@ def viewAccount(window, slotOne, slotTwo):
                     statsToDisplay.append("Total Number of Wins Against Players: " + str(chosenSlot.getAnAccountStat("Total Number of Wins Against Players")))
                     statsToDisplay.append("Total Number of Draws Against Players: " + str(chosenSlot.getAnAccountStat("Total Number of Draws Against Players")))
                     statsToDisplay.append("Total Number of Losses Against Players: " + str(chosenSlot.getAnAccountStat("Total Number of Losses Against Players")))
-                    statsToDisplay.append("Total Number of Losses Against Players: " + str(chosenSlot.getAnAccountStat("Total Number of Losses Against Players")))
+                    statsToDisplay.append("Total Number of Games Played Against Players: " + str(chosenSlot.getAnAccountStat("Total Number of Games Played Against Players")))
                     statsToDisplay.append("Highest Win Streak Against Players: " + str(chosenSlot.getAnAccountStat("Highest Win Streak Against Players")))
                     statsToDisplay.append("Current Win Streak Against Players: " + str(chosenSlot.getAnAccountStat("Current Win Streak Against Players")))
                     statsToDisplay.append("Average Number of Moves to Win Against Players: " + str(chosenSlot.getAnAccountStat("Average Number of Moves to Win Against Players")))

@@ -54,8 +54,9 @@ def gameAreaWindow(window, slotOne, slotTwo):
 
 def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="None"): # Carry out a game
     # Work out what to pass to the game class constructor
+    print(slotOne.getAllAccountStats())
     if chosenGameMode == "PvP" and chosenSlot == "None": # If PvP chosen, no slot is chosen since both account slots are used
-        game = GameClass.Game(window, chosenGameMode, gameOptions[0])
+        game = GameClass.Game(window, chosenGameMode, gameOptions[0], slotOne, slotTwo)
     else: # gameMode == "PvAI" and chosenSlot != "None" (In PvAI, one slot is chosen to be used)
         if chosenSlot == slotOne:
             game = GameClass.Game(window, chosenGameMode, gameOptions[0], slotOne, None, gameOptions[1])
@@ -69,18 +70,204 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
         # Check if game needs to end
         if game.getGameFinished():
             winner = game.getWinner()
+            slotOneTotalNumberOfMoves = game.getSlotOneTotalNumberOfMoves()
+            slotTwoTotalNumberOfMoves = game.getSlotOneTotalNumberOfMoves()
+
+            # Update Account Stats and display winner
             if winner == None:
                 message = "The Game Was a Draw"
+                if chosenGameMode == "PvP":
+                    # Increment number of draws against players by 1 (for both slots)
+                    slotOneCurrentDrawsAgainstPlayers = slotOne.getAnAccountStat("Total Number of Draws Against Players")
+                    slotTwoCurrentDrawsAgainstPlayers = slotTwo.getAnAccountStat("Total Number of Draws Against Players")
+                    slotOne.setAnAccountStat("Total Number of Draws Against Players", (slotOneCurrentDrawsAgainstPlayers+1))
+                    slotTwo.setAnAccountStat("Total Number of Draws Against Players", (slotTwoCurrentDrawsAgainstPlayers+1))
+                    # End current win streak against players (for both slots)
+                    slotOne.setAnAccountStat("Current Win Streak Against Players", 0)
+                    slotTwo.setAnAccountStat("Current Win Streak Against Players", 0)
+                if chosenGameMode == "PvAI":
+                    if chosenSlot == slotOne:
+                        # Increment number of draws against the AI by 1 (for slot one)
+                        slotOneCurrentDrawsAgainstAI = slotOne.getAnAccountStat("Total Number of Draws Against AI")
+                        slotOne.setAnAccountStat("Total Number of Draws Against AI", (slotOneCurrentDrawsAgainstAI+1))
+                        # End current win streak against AI (for slot one)
+                        slotOne.setAnAccountStat("Current Win Streak Against AI", 0)
+                    else:
+                        # Increment number of draws against the AI by 1 (for slot two)
+                        slotTwoCurrentDrawsAgainstAI = slotTwo.getAnAccountStat("Total Number of Draws Against AI")
+                        slotTwo.setAnAccountStat("Total Number of Draws Against AI", (slotTwoCurrentDrawsAgainstAI+1))
+                        # End current win streak against AI (for slot two)
+                        slotTwo.setAnAccountStat("Current Win Streak Against AI", 0)
+
             elif winner == "AI":
                 message = "The AI Won the Game"
+                if chosenSlot == slotOne:
+                    # Increment number of losses against the AI by 1 (for slot one)
+                    slotOneCurrentLossesAgainstAI = slotOne.getAnAccountStat("Total Number of Losses Against AI")
+                    slotOne.setAnAccountStat("Total Number of Losses Against AI", (slotOneCurrentLossesAgainstAI+1))
+                    # End current win streak against the AI (for slot one)
+                    slotOne.setAnAccountStat("Current Win Streak Against AI", 0)
+                else:
+                    # Increment number of losses against the AI by 1 (for slot two)
+                    slotTwoCurrentLossesAgainstAI = slotTwo.getAnAccountStat("Total Number of Losses Against AI")
+                    slotTwo.setAnAccountStat("Total Number of Losses Against AI", (slotTwoCurrentLossesAgainstAI+1))
+                    # End current win streak against the AI (for slot two)
+                    slotTwo.setAnAccountStat("Current Win Streak Against AI", 0)
+
             else: # One of the slots won
                 if winner == "S1": # slot one won
                     winningSlot = slotOne
-                else:
+                    if chosenGameMode == "PvP":
+                        # Increment number of wins against players by 1 (for slot one)
+                        slotOneCurrentWinsAgainstPlayers = slotOne.getAnAccountStat("Total Number of Wins Against Players")
+                        slotOne.setAnAccountStat("Total Number of Wins Against Players", (slotOneCurrentWinsAgainstPlayers+1))
+                        # Increment current win streak against players by 1 (for slot one)
+                        slotOneCurrentWinStreakAgainstPlayers = slotOne.getAnAccountStat("Current Win Streak Against Players")
+                        slotOne.setAnAccountStat("Current Win Streak Against Players", (slotOneCurrentWinStreakAgainstPlayers+1))
+                        # Check if the current win streak against players is a new highest win streak (for slot one)
+                        slotOneHighestWinStreakAgainstPlayers = slotOne.getAnAccountStat("Highest Win Streak Against Players")
+                        slotOneCurrentWinStreakAgainstPlayers = slotOne.getAnAccountStat("Current Win Streak Against Players")  # Called again as it has been changed since the variable was last declared
+                        if slotOneCurrentWinStreakAgainstPlayers > slotOneHighestWinStreakAgainstPlayers: 
+                            slotOne.setAnAccountStat("Highest Win Streak Against Players", slotOneCurrentWinStreakAgainstPlayers)
+                        # Update average number of moves to win against players, uses 'sum' and 'count' to get average (for slot one) 
+                        slotOneTotalNumberOfMoves = game.getSlotOneTotalNumberOfMoves() # Get the number of moves slot one made in the game just played
+                        print("final num of moves for s1", slotOneTotalNumberOfMoves)
+                        slotOneExistingSum = slotOne.getAnAccountStat("Average Number of Moves to Win Against Players Sum") # Get the total number of moves the account in slot one has made in all their previously won games against other players 
+                        slotOneNewSum = slotOneTotalNumberOfMoves + slotOneExistingSum # Get the new sum by adding them together
+                        print("new s1 sum", slotOneNewSum)
+                        slotOne.setAnAccountStat("Average Number of Moves to Win Against Players Sum", slotOneNewSum)
+                        
+                        slotOneExistingCount = slotOne.getAnAccountStat("Average Number of Moves to Win Against Players Count") # Count is used to work out the average (how many games make up the moves sum)
+                        slotOne.setAnAccountStat("Average Number of Moves to Win Against Players Count", (slotOneExistingCount+1))
+                        
+                        slotOneMovesSum = slotOne.getAnAccountStat("Average Number of Moves to Win Against Players Sum") # Call again as the values have been changed
+                        slotOneMovesCount = slotOne.getAnAccountStat("Average Number of Moves to Win Against Players Count")
+                        slotOneAverage = slotOneMovesSum / slotOneMovesCount
+                        print("avg", slotOneAverage)
+                        slotOne.setAnAccountStat("Average Number of Moves to Win Against Players", slotOneAverage)
+                        # Increment number of losses against players by 1 (for slot two)
+                        slotTwoCurrentLossesAgainstPlayers = slotTwo.getAnAccountStat("Total Number of Losses Against Players")
+                        slotTwo.setAnAccountStat("Total Number of Losses Against Players",(slotTwoCurrentLossesAgainstPlayers+1))
+                        # End current win streak against players (for slot two)
+                        slotTwo.setAnAccountStat("Current Win Streak Against Players", 0)
+                        # Increment number of games played against players by 1 (for both slots)
+                        slotOneNumOfGamesPlayedAgainstPlayers = slotOne.getAnAccountStat("Total Number of Games Played Against Players")
+                        slotOne.setAnAccountStat("Total Number of Games Played Against Players", (slotOneNumOfGamesPlayedAgainstPlayers+1))
+                        slotTwoNumOfGamesPlayedAgainstPlayers = slotTwo.getAnAccountStat("Total Number of Games Played Against Players")
+                        slotTwo.setAnAccountStat("Total Number of Games Played Against Players", (slotTwoNumOfGamesPlayedAgainstPlayers+1))
+                    else:
+                        # Increment number of wins against the AI by 1 (for slot one)
+                        slotOneCurrentWinsAgainstAI = slotOne.getAnAccountStat("Total Number of Wins Against AI")
+                        slotOne.setAnAccountStat("Total Number of Wins Against AI", (slotOneCurrentWinsAgainstAI+1))
+                        # Increment current win streak against the AI by 1 (for slot one)
+                        slotOneCurrentWinStreakAgainstAI = slotOne.getAnAccountStat("Current Win Streak Against AI")
+                        slotOne.setAnAccountStat("Current Win Streak Against AI", (slotOneCurrentWinStreakAgainstAI+1))
+                        # Check if the current win streak against the AI is a new highest win streak (for slot one)
+                        slotOneCurrentWinStreakAgainstAI = slotOne.getAnAccountStat("Current Win Streak Against AI")
+                        slotOneHighestWinStreakAgainstAI = slotTwo.getAnAccountStat("Highest Win Streak Against AI")
+                        if slotOneCurrentWinStreakAgainstAI > slotOneHighestWinStreakAgainstAI:
+                            slotOne.setAnAccountStat("Highest Win Streak Against AI", slotOneCurrentWinStreakAgainstAI)
+                        # Update average number of moves to win against AI, uses 'sum' and 'count' to get average (for slot one) 
+                        slotOneTotalNumberOfMoves = game.getSlotOneTotalNumberOfMoves() # Get the number of moves slot one made in the game just played
+                        slotOneExistingSum = slotOne.getAnAccountStat("Average Number of Moves to Win Against AI Sum") # Get the total number of moves the account in slot one has made in all their previously won games against the AI   
+                        slotOneNewSum = slotOneTotalNumberOfMoves + slotOneExistingSum # Get the new sum by adding them together
+                        slotOne.setAnAccountStat("Average Number of Moves to Win Against AI Sum", slotOneNewSum)
+
+                        slotOneExistingCount = slotOne.getAnAccountStat("Average Number of Moves to Win Against AI Count") # Count is used to work out the average (how many games make up the moves sum)
+                        slotOne.setAnAccountStat("Average Number of Moves to Win Against AI Count", (slotOneExistingCount+1))
+                        
+                        slotOneMovesSum = slotOne.getAnAccountStat("Average Number of Moves to Win Against AI Sum") # Call again as the values have been changed
+                        slotOneMovesCount = slotOne.getAnAccountStat("Average Number of Moves to Win Against AI Count")
+                        slotOneNewAverage = slotOneMovesSum / slotOneMovesCount
+                        slotOne.setAnAccountStat("Average Number of Moves to Win Against AI", slotOneNewAverage)
+                        # Increment number of games played against the AI by 1 (for slot one)
+                        slotOneNumOfGamesPlayedAgainstAI = slotOne.getAnAccountStat("Total Number of Games Played Against AI")
+                        slotOne.setAnAccountStat("Total Number of Games Played Against AI", (slotOneNumOfGamesPlayedAgainstAI+1))
+
+                else: # slot two won
                     winningSlot = slotTwo
+                    if chosenGameMode == "PvP":
+                        # Increment number of wins against players by 1 (for slot two)
+                        slotTwoCurrentWinsAgainstPlayers = slotTwo.getAnAccountStat("Total Number of Wins Against Players")
+                        slotTwo.setAnAccountStat("Total Number of Wins Against Players", (slotTwoCurrentWinsAgainstPlayers+1))
+                        # Increment current win streak against players by 1 (for slot two)
+                        slotTwoCurrentWinStreakAgainstPlayers = slotTwo.getAnAccountStat("Current Win Streak Against Players")
+                        slotTwo.setAnAccountStat("Current Win Streak Against Players", (slotTwoCurrentWinStreakAgainstPlayers+1))
+                        # Check if the current win streak against players is a new highest win streak (for slot two)
+                        slotTwoHighestWinStreakAgainstPlayers = slotOne.getAnAccountStat("Highest Win Streak Against Players")
+                        slotTwoCurrentWinStreakAgainstPlayers = slotTwo.getAnAccountStat("Current Win Streak Against Players") # Called again as it has been changed since the variable was last declared
+                        if slotTwoCurrentWinStreakAgainstPlayers > slotTwoHighestWinStreakAgainstPlayers:
+                            slotTwo.setAnAccountStat("Highest Win Streak Against Players", slotTwoCurrentWinStreakAgainstPlayers)
+                        # Update average number of moves to win against players, uses 'sum' and 'count' to get average (for slot two) 
+                        slotTwoTotalNumberOfMoves = game.getSlotTwoTotalNumberOfMoves() # Get the number of moves slot two made in the game just played
+                        slotTwoExistingSum = slotTwo.getAnAccountStat("Average Number of Moves to Win Against Players Sum") # Get the total number of moves the account in slot two has made in all their previously won games against other players 
+                        slotTwoNewSum = slotTwoTotalNumberOfMoves + slotTwoExistingSum # Get the new sum by adding them together
+                        slotTwo.setAnAccountStat("Average Number of Moves to Win Against Players Sum", slotTwoNewSum)
+
+                        slotTwoExistingCount = slotTwo.getAnAccountStat("Average Number of Moves to Win Against Players Count") # Count is used to work out the average (how many games make up the moves sum)
+                        slotTwo.setAnAccountStat("Average Number of Moves to Win Against Players Count", (slotTwoExistingCount+1))
+                        
+                        slotTwoMovesSum = slotTwo.getAnAccountStat("Average Number of Moves to Win Against Players Sum") # Call again as the values have been changed
+                        slotTwoMovesCount = slotTwo.getAnAccountStat("Average Number of Moves to Win Against Players Count")
+                        slotTwoAverage = slotTwoMovesSum / slotTwoMovesCount
+                        slotTwo.setAnAccountStat("Average Number of Moves to Win Against Players", slotTwoNewAverage)
+                        # Increment number of losses against players by 1 (for slot one)
+                        slotOneCurrentLossesAgainstPlayers = slotOne.getAnAccountStat("Total Number of Losses Against Players")
+                        slotOne.setAnAccountStat("Total Number of Losses Against Players", (slotOneCurrentLossesAgainstPlayers+1))
+                        # End current win streak against players (for slot two)
+                        slotOne.setAnAccountStat("Current Win Streak Against Players", 0)
+                        # Increment number of games played against players by 1 (for both slots)
+                        slotOneNumOfGamesPlayedAgainstPlayers = slotOne.getAnAccountStat("Total Number of Games Played Against Players")
+                        slotOne.setAnAccountStat("Total Number of Games Played Against Players", (slotOneNumOfGamesPlayedAgainstPlayers+1))
+                        slotTwoNumOfGamesPlayedAgainstPlayers = slotTwo.getAnAccountStat("Total Number of Games Played Against Players")
+                        slotTwo.setAnAccountStat("Total Number of Games Played Against Players", (slotTwoNumOfGamesPlayedAgainstPlayers+1))
+                    else:
+                        # Increment number of wins against the AI by 1 (for slot two)
+                        slotTwoCurrentWinsAgainstAI = slotTwo.getAnAccountStat("Total Number of Wins Against AI")
+                        slotTwo.setAnAccountStat("Total Number of Wins Against AI", (slotTwoCurrentWinsAgainstAI+1))
+                        # Increment current win streak against the AI by 1 (for slot two)
+                        slotTwoCurrentWinStreakAgainstAI = slotTwo.getAnAccountStat("Current Win Streak Against AI")
+                        slotTwo.setAnAccountStat("Current Win Streak Against AI", (slotTwoCurrentWinStreakAgainstAI+1))
+                        # Check if the current win streak against the AI is a new highest win streak (for slot two)
+                        slotTwoCurrentWinStreakAgainstAI = slotTwo.getAnAccountStat("Current Win Streak Against AI")
+                        slotTwoHighestWinStreakAgainstAI = slotTwo.getAnAccountStat("Highest Win Streak Against AI")
+                        if slotTwoCurrentWinStreakAgainstAI > slotTwoHighestWinStreakAgainstAI:
+                            slotTwo.setAnAccountStat("Highest Win Streak Against AI", slotTwoCurrentWinStreakAgainstAI)
+                        # Update average number of moves to win against AI, uses 'sum' and 'count' to get average (for slot two) 
+                        slotTwoTotalNumberOfMoves = game.getSlotTwoTotalNumberOfMoves() # Get the number of moves slot two made in the game just played
+                        slotTwoExistingSum = slotTwo.getAnAccountStat("Average Number of Moves to Win Against AI Sum") # Get the total number of moves the account in slot two has made in all their previously won games against the AI   
+                        slotTwoNewSum = slotTwoTotalNumberOfMoves + slotTwoExistingSum # Get the new sum by adding them together
+                        slotTwo.setAnAccountStat("Average Number of Moves to Win Against AI Sum", slotTwoNewSum)
+
+                        slotTwoExistingCount = slotTwo.getAnAccountStat("Average Number of Moves to Win Against AI Count") # Count is used to work out the average (how many games make up the moves sum)
+                        slotTwo.setAnAccountStat("Average Number of Moves to Win Against AI Count", (slotTwoExistingCount+1))
+                        
+                        slotTwoMovesSum = slotTwo.getAnAccountStat("Average Number of Moves to Win Against AI Sum") # Call again as the values have been changed
+                        slotTwoMovesCount = slotTwo.getAnAccountStat("Average Number of Moves to Win Against AI Count")
+                        slotTwoNewAverage = slotTwoMovesSum / slotTwoMovesCount
+                        slotTwo.setAnAccountStat("Average Number of Moves to Win Against AI", slotTwoNewAverage)
+                        # Increment number of games played against the AI by 1 (for slot two)
+                        slotTwoNumOfGamesPlayedAgainstAI = slotTwo.getAnAccountStat("Total Number of Games Played Against AI")
+                        slotTwo.setAnAccountStat("Total Number of Games Played Against AI", (slotTwoNumOfGamesPlayedAgainstAI+1))
+
+                # Generate the message to display on the end of game window (to show who won)
                 username = winningSlot.getUsername() # Get the username of the account in the winning slot
                 message = str(username) + " Won the Game"
 
+            # Use the now updated dictionary in the account slot/s to update the database (to reflect the changes there as well)
+            if chosenGameMode == "PvP":
+                print("PVP")
+                slotOne.applyDictionaryChangesToDatabase()
+                slotTwo.applyDictionaryChangesToDatabase()
+            else:
+                if chosenSlot == slotOne:
+                    print("s1 PvAI")
+                    slotOne.applyDictionaryChangesToDatabase()
+                else:
+                    print("s2 PvAI")
+                    slotTwo.applyDictionaryChangesToDatabase()
+                
+            # Display the message
             DisplayMessageWindow.displayMessage(window, False, True, message) # Used to display game results
             running = False
         else:
@@ -93,3 +280,5 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                     pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
                     game.processClick(mousePos)
                     pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
+
+

@@ -24,6 +24,8 @@ class Game:
         self.__lastMoveMade = None # Used to work out which possible move locations to display next + to work out if a user should be able to change the man/king they have selected (if they have made a move they should not be able to move another man/king)
         self.__slotOne = slotOne # None is used if the slot is not being used (for example, PvAI will have only one slot being used)
         self.__slotTwo = slotTwo
+        self.__slotOneTotalNumberOfMoves = 0 # Track how many moves each has made in the current game 
+        self.__slotTwoTotalNumberOfMoves = 0
         self.__gameFinished = False
         self.__winner = None
         self.__AIDifficulty = AIDifficulty # None is used if the game mode is PvP and not PvAI (since in PvP they AI isn't used)
@@ -61,6 +63,12 @@ class Game:
 
     def getWinner(self):
         return self.__winner
+
+    def getSlotOneTotalNumberOfMoves(self):
+        return self.__slotOneTotalNumberOfMoves
+    
+    def getSlotOneTotalNumberOfMoves(self):
+        return self.__slotTwoTotalNumberOfMoves
 
     # Other
     def updateDisplay(self): # Update the window/display
@@ -230,12 +238,18 @@ class Game:
         # Change slot/player/ai
         if self.__gameMode == "PvP":
             if self.__turn[0] == self.__slotOne: # slotOne -> slotTwo
+                self.__slotOneTotalNumberOfMoves += 1
                 self.__turn[0] = self.__slotTwo
             else: # slotTwo -> slotOne
+                self.__slotTwoTotalNumberOfMoves += 1
                 self.__turn[0] = self.__slotOne
 
         else: # gameMode == "PvAI"
             if self.__turn[0] == self.__slotOne or self.__turn[0] == self.__slotTwo:
+                if self.__slotOne != None: # Slot one chosen
+                    self.__slotOneTotalNumberOfMoves += 1
+                else: # Slot two chosen
+                    self.__slotTwoTotalNumberOfMoves += 1
                 self.__turn[0] = "AI" # AI's Turn
             else: # == "AI"
                 # Check which slot is being used
@@ -255,6 +269,9 @@ class Game:
         # Carry out AI turn (if needed)
         if self.__turn[0] == "AI" and self.__gameFinished == False:
             self.AIMove()
+
+        print("S1Moves",self.__slotOneTotalNumberOfMoves)
+        print("S2Moves",self.__slotTwoTotalNumberOfMoves)
 
     def workOutIsGameFinished(self, turnColour):
         returnSet = []

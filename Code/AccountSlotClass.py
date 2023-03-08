@@ -4,6 +4,7 @@ class AccountSlot:
         self.__username = None
         self.__database = None # database object (DatabaseClass.Database)
         self.__AccountID = None # ID of the record which stores the account in the database
+        self.__StatsID = None # ID of the record which stores the stats for the account
         self.__colour = None # The colour the slot is playing as (in the game)
         self.__accountStats = { # Stores all the stats from the stats table in the database
             "Date Created":None,
@@ -38,6 +39,9 @@ class AccountSlot:
     def getAccountID(self):
         return self.__AccountID
 
+    def getStatsID(self):
+        return self.__StatsID
+
     def getColour(self):
         return self.__colour
     
@@ -61,6 +65,9 @@ class AccountSlot:
     def setAccountID(self, ID):
         self.__AccountID = ID
 
+    def setStatsID(self, ID):
+        self.__StatsID = ID
+
     def setColour(self, colour):
         self.__colour = colour
 
@@ -73,6 +80,11 @@ class AccountSlot:
     
 
     # Other
+    def applyDictionaryChangesToDatabase(self): # Called so changes to the values in the dictionary are also applied to the database
+        print(self.__accountStats)
+        self.__database.updateDatabaseWithDictionary(self.__accountStats, self.__StatsID)
+            
+
     def signIn(self, username, password):
         checkUsernameAndPassword = self.__database.checkUsernameAndPassword(username, password) # Check if username & password match an account
         if not checkUsernameAndPassword: 
@@ -82,6 +94,7 @@ class AccountSlot:
             # Update slot information with account information
             self.setUsername(accountInformation[0][1])
             self.setAccountID(accountInformation[0][0])
+            self.setStatsID(accountInformation[0][4])
             self.setAnAccountStat("Date Created", accountInformation[0][3])
             self.setAnAccountStat("Total Number of Wins Against AI", accountInformation[0][6])
             self.setAnAccountStat("Total Number of Draws Against AI", accountInformation[0][7])
@@ -108,9 +121,11 @@ class AccountSlot:
     def signUp(self, username, password):
         self.__database.addNewUser(username, password)
 
+
     def signOut(self): # Clear the account slot information when the account is signed out, ready for next account to sign in
         self.__username = None
         self.__AccountID = None
+        self.__StatsID = None
         self.__colour = None
         self.__accountStats = dict.fromkeys(self.__accountStats, None)
 

@@ -76,6 +76,7 @@ class Database:
     def makeCursor(self, databaseConnection):
         return databaseConnection.cursor()
 
+
     def checkUsernameAndPassword(self, username, password):
         databaseConnection = self.makeConnection()
         databaseCursor = self.makeCursor(databaseConnection)
@@ -96,6 +97,7 @@ class Database:
 
         return boolean
 
+
     def getAccountInformation(self, username, password):
         databaseConnection = self.makeConnection()
         databaseCursor = self.makeCursor(databaseConnection)
@@ -103,13 +105,12 @@ class Database:
         encodedPassword = password.encode() # Encode with UTF-8
         hashedPassword = hashlib.sha256(encodedPassword) # Hash password
 
-        preparedQuery = "SELECT * FROM UserAccount, UserStats WHERE Username=%s AND Password=%s"
+        preparedQuery = "SELECT * FROM UserAccount, UserStats WHERE Username=%s AND Password=%s AND UserAccount.StatsID = UserStats.StatsID"
         # Return account information
         accountInformation = databaseCursor.execute(preparedQuery, (username, hashedPassword.hexdigest()))
         
         return databaseCursor.fetchall()
         
-
 
     def isUsernameUnique(self, username):
         databaseConnection = self.makeConnection()
@@ -128,6 +129,7 @@ class Database:
         databaseConnection.close()
         
         return boolean
+
 
     def addNewUser(self, username, password): # Add a new user to the database
         databaseConnection = self.makeConnection()
@@ -166,3 +168,42 @@ class Database:
 
             databaseCursor.close()
             databaseConnection.close()
+
+    
+    def updateDatabaseWithDictionary(self, dictionary, StatsID):
+        databaseConnection = self.makeConnection()
+        databaseCursor = self.makeCursor(databaseConnection)
+
+        valuesForStatement = list(dictionary.values())[1:] # List slicing is used to ignore the first key (and value) as this is the date the account was created which is not in the UserStats table (and does not even change)
+
+        valuesForStatement.append(StatsID) # Add the value of StatsID to end so it can be put in the placeholder for the WHERE part
+
+        preparedQuery = """ UPDATE UserStats SET                 
+                TotalNumberOfWinsAgainstAI = %s,
+                TotalNumberOfDrawsAgainstAI = %s,
+                TotalNumberOfLossesAgainstAI = %s,
+                TotalNumberOfGamesPlayedAgainstAI = %s,
+                HighestWinStreakAgainstAI = %s,
+                CurrentWinStreakAgainstAI = %s,
+                AverageNumberOfMovesToWinAgainstAI = %s,
+                AverageNumberOfMovesToWinAgainstAICount = %s,
+                AverageNumberOfMovesToWinAgainstAISum = %s,
+                TotalNumberOfWinsAgainstPlayers = %s,
+                TotalNumberOfDrawsAgainstPlayers = %s,
+                TotalNumberOfLossesAgainstPlayers = %s,
+                TotalNumberOfGamesPlayedAgainstPlayers = %s,
+                HighestWinStreakAgainstPlayers = %s,
+                CurrentWinStreakAgainstPlayers = %s,
+                AverageNumberOfMovesToWinAgainstPlayers = %s,
+                AverageNumberOfMovesToWinAgainstPlayersCount = %s,
+                AverageNumberOfMovesToWinAgainstPlayersSum = %s
+                WHERE StatsID = %s
+        """
+        print("valuesForStatement", valuesForStatement)
+        databaseCursor.execute(preparedQuery, valuesForStatement)
+        databaseConnection.commit()
+
+        databaseCursor.close()
+        databaseConnection.close()
+
+
