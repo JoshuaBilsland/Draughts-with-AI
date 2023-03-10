@@ -273,31 +273,6 @@ class Game:
         print("S1Moves",self.__slotOneTotalNumberOfMoves)
         print("S2Moves",self.__slotTwoTotalNumberOfMoves)
 
-    def workOutIsGameFinished(self, turnColour):
-        returnSet = []
-
-        # Check if side have had all their men/kings captured (the other side has won)
-        if self.__board.getNumOfColourOneLeft == 0:
-            returnSet.extend([True, COLOUR_TWO]) # Structure -> [isGameFinished, whoWon]
-        elif self.__board.getNumOfColourTwoLeft == 0:
-            returnSet.extend([True, COLOUR_ONE])
-        else:
-            # Check if their is a draw (check if no more moves are possible)
-            colourOneMovesPossible = self.__board.isPossibleMoves(COLOUR_ONE) # Store if any moves are possible for colour one
-            colourTwoMovesPossible = self.__board.isPossibleMoves(COLOUR_TWO)
-
-            if colourOneMovesPossible == False and colourTwoMovesPossible == False:
-                returnSet.extend([True, None]) # It is a draw since there are no more legal moves
-
-            elif colourOneMovesPossible == True and colourTwoMovesPossible != True:
-                returnSet.extend([True, COLOUR_ONE]) # Colour one has one since colour two cannot make any more moves
-            
-            elif colourOneMovesPossible != True and colourTwoMovesPossible == True:
-                returnSet.extend([True, COLOUR_TWO]) # Colour two has one since colour one cannot make any more moves
-
-            else:
-                returnSet.extend([False, None]) # Game is not finished -> there are still men/kings left and possible legal moves for at least one of them
-        return returnSet
     
     def workOutIsGameFinished(self, turnColour):
         returnSet = []
