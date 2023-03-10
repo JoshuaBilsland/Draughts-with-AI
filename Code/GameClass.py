@@ -298,4 +298,33 @@ class Game:
             else:
                 returnSet.extend([False, None]) # Game is not finished -> there are still men/kings left and possible legal moves for at least one of them
         return returnSet
+    
+    def workOutIsGameFinished(self, turnColour):
+        returnSet = []
 
+        if turnColour == COLOUR_ONE: # COlOUR_ONE has just made a move so check COLOUR_TWO before switching turn (as the game might already be over)
+            # next turn will be COLOUR_TWO so check if COLOUR_TWO has any moves left
+            if self.__board.getNumOfColourTwoLeft == 0:
+                returnSet.extend([True, COLOUR_ONE]) # Structure -> [isGameFinished, whoWon]
+                
+        else: # COlOUR_TWO has just made a move so check COLOUR_ONE before switching turn (as the game might already be over)
+            # next turn will be COLOUR_ONE so check if COLOUR_ONE has any moves left
+            if self.__board.getNumOfColourOneLeft == 0:
+                returnSet.extend([True, COLOUR_TWO])
+
+        colourOneMovesPossible = self.__board.isPossibleMoves(COLOUR_ONE) # Store if any moves are possible for colour one (boolean)
+        colourTwoMovesPossible = self.__board.isPossibleMoves(COLOUR_TWO) # colour two as well
+            
+        if colourOneMovesPossible == False and colourTwoMovesPossible == False:
+            returnSet.extend([True, None]) # It is a draw since there are no more legal moves, regardless of whose turn it was and will be
+
+        elif colourOneMovesPossible == True and colourTwoMovesPossible == False and turnColour == COLOUR_ONE:
+            returnSet.extend([True, COLOUR_ONE]) # Colour one has won since colour two cannot make any more moves when the turn switches to theirs
+         
+        elif colourOneMovesPossible == False and colourTwoMovesPossible == True and turnColour == COLOUR_TWO:
+            returnSet.extend([True, COLOUR_TWO]) # Colour two has won since colour one cannot make any more moves when the turn switches to theirs
+
+        elif len(returnSet) == 0: # No previous condition was met (and so returnSet was not changed) so the game is not finished
+            returnSet.extend([False, None]) # Game is not finished -> there are still men/kings left and possible legal moves for at least one of them
+        
+        return returnSet       
