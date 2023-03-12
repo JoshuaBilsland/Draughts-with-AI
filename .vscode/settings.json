@@ -3,5 +3,6 @@
         "blit",
         "MOUSEBUTTONDOWN",
         "pygame"
-    ]
+    ],
+    "python.analysis.typeCheckingMode": "basic"
 }

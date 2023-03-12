@@ -9,7 +9,11 @@ from Constants import(
 
 # Used by the AI to decide what is the best possible move to make for a given board and colour
 def minimax(board, isColourOne, depthForDifficulty, alpha, beta):
-    if (board.getNumOfColourOneLeft() == 0 or board.getNumOfColourTwoLeft() == 0) or depthForDifficulty == 0: # Base case: The game is over or the it has reached the depth limit (starts at a number and each call takes away 1 until it hits 0)
+    if isColourOne:
+        turnColour = COLOUR_ONE
+    else:
+        turnColour = COLOUR_TWO
+    if board.workOutIsGameFinished(turnColour)[0] or depthForDifficulty == 0: # Base case: The game is over or the it has reached the depth limit (starts at a number and each call takes away 1 until it hits 0)
         return scoreBoard(board), board
     
     if isColourOne: # Max (Colour One is black)

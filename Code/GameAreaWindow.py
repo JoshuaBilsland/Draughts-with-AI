@@ -105,12 +105,18 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                     # Increment number of losses against the AI by 1 (for slot one)
                     slotOneCurrentLossesAgainstAI = slotOne.getAnAccountStat("Total Number of Losses Against AI")
                     slotOne.setAnAccountStat("Total Number of Losses Against AI", (slotOneCurrentLossesAgainstAI+1))
+                    # Increment number of games played against the AI by 1 (for slot one)
+                    slotOneNumOfGamesPlayedAgainstAI = slotOne.getAnAccountStat("Total Number of Games Played Against AI")
+                    slotOne.setAnAccountStat("Total Number of Games Played Against AI", (slotOneNumOfGamesPlayedAgainstAI+1))
                     # End current win streak against the AI (for slot one)
                     slotOne.setAnAccountStat("Current Win Streak Against AI", 0)
                 else:
                     # Increment number of losses against the AI by 1 (for slot two)
                     slotTwoCurrentLossesAgainstAI = slotTwo.getAnAccountStat("Total Number of Losses Against AI")
                     slotTwo.setAnAccountStat("Total Number of Losses Against AI", (slotTwoCurrentLossesAgainstAI+1))
+                    # Increment number of games played against the AI by 1 (for slot two)
+                    slotOneNumOfGamesPlayedAgainstAI = slotOne.getAnAccountStat("Total Number of Games Played Against AI")
+                    slotOne.setAnAccountStat("Total Number of Games Played Against AI", (slotOneNumOfGamesPlayedAgainstAI+1))
                     # End current win streak against the AI (for slot two)
                     slotTwo.setAnAccountStat("Current Win Streak Against AI", 0)
 
@@ -271,6 +277,9 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
             DisplayMessageWindow.displayMessage(window, False, True, message) # Used to display game results
             running = False
         else:
+            # Check if AI move needs to be carried out
+            if game.getTurn()[0] == "AI":
+                game.AIMove()
             # Event loop
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
