@@ -11,7 +11,6 @@ from Constants import (
     BLUE
 )
 
-
 class Board:
     # Creates a list of where the men are which is used to then draw the board in the window
     def __init__(self):
@@ -40,8 +39,8 @@ class Board:
                     else:
                         self.__board[row].append(0)
 
-
-    def drawBoard(self, window, legalMoves, lastMoveMade): # Draw the board squares and the men
+    # Draw the board squares and the men/kings to the pygame window
+    def drawBoard(self, window, legalMoves, lastMoveMade): 
         # Draw board pattern
         for row in range(ROWS):
             for column in range(COLUMNS):
@@ -83,7 +82,8 @@ class Board:
                 pygame.draw.circle(window, BLUE, (x, y), radius) # Draw a circle showing where the man/king could move to
 
                 
-# Get
+    # Get Methods
+
     def getBoard(self):
         return self.__board
 
@@ -105,8 +105,10 @@ class Board:
         return men
                     
 
-# Other
-    def makeMove(self, man, moveToMake): # Move a man object to a different position in the board list
+    # Other Methods
+
+    # Move a man object to a different position in the board list
+    def makeMove(self, man, moveToMake): 
         oldRow = moveToMake[2]
         oldColumn = moveToMake[3]
         newRow = moveToMake[4]
@@ -152,7 +154,7 @@ class Board:
             boolean = True
         return boolean
 
-# Getting legal moves for a man/king
+    # Getting legal moves for a man/king
     def getLegalMoves(self, moveNumber, isKing, row, column, turnColour): # moveNumber is for if a player makes multiple moves (captures) in one turn since this will change what makes a move legal (must capture again)
         legalMoves = []
         if turnColour == COLOUR_ONE:
@@ -174,7 +176,9 @@ class Board:
 
         return legalMoves
 
-    def getLegalMovesDown(self, moveNumber, isKing, row, column, oppositeManColour): # Make a list of all valid moves that could be made if the man was to move down the board
+
+    # Make a list of all valid moves that could be made if the man was to move down the board
+    def getLegalMovesDown(self, moveNumber, isKing, row, column, oppositeManColour): 
         legalMoves = []
 
         if moveNumber == 1: # moveNumber is used to show that these moves would be the first move that the player has made that turn (The move does not have to jump/capture a man)
@@ -219,7 +223,9 @@ class Board:
             
         return legalMoves
 
-    def getLegalMovesUp(self, moveNumber, isKing, row, column, oppositeManColour): # Make a list of all valid moves that could be made if the man was to move up the board
+
+    # Make a list of all valid moves that could be made if the man was to move up the board
+    def getLegalMovesUp(self, moveNumber, isKing, row, column, oppositeManColour): 
         legalMoves = []
 
         if moveNumber == 1: # moveNumber is used to show that these moves would be the first move that the player has made that turn (The move does not have to jump/capture a man)
@@ -265,7 +271,8 @@ class Board:
         return legalMoves
 
 
-    def isPossibleMoves(self, colourToCheckFor): # Used to work out if a game is over or it should continue (checks for any possible legal moves, if some are found then the game could continue (depending on other factors))
+    # Used to work out if a game is over or it should continue (checks for any possible legal moves, if some are found then the game could continue (depending on other factors))
+    def isPossibleMoves(self, colourToCheckFor): 
         # Check for any possible moves for the colour given
         for row in range(ROWS):
             for column in range(COLUMNS):
@@ -276,7 +283,8 @@ class Board:
                             return True # A possible move was found
         return False # No possible moves
 
-    
+
+    # Work out if a game has meet any condition that would mean it is finished. Get who won, if it was a draw, etc
     def workOutIsGameFinished(self, turnColour):
         returnSet = []
 

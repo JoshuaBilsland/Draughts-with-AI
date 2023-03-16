@@ -32,12 +32,12 @@ def chooseGameOptions(window, gameMode, slotOne, slotTwo):
         # Choose colour to play as
         manColourOneButton = ButtonClass.Button(COLOUR_ONE, REGULAR_BUTTON_X-(WIDTH/4), REGULAR_BUTTON_Y+(HEIGHT*0.07), REGULAR_BUTTON_WIDTH, REGULAR_BUTTON_HEIGHT, "")
         manColourOneButton.draw(window)
-        if manColourOneButtonSelected == True:
+        if manColourOneButtonSelected:
             manColourOneButton.drawSelectedLines(window, RED)
 
         manColourTwoButton = ButtonClass.Button(COLOUR_TWO, REGULAR_BUTTON_X+(WIDTH/4), REGULAR_BUTTON_Y+(HEIGHT*0.07), REGULAR_BUTTON_WIDTH, REGULAR_BUTTON_HEIGHT, "")
         manColourTwoButton.draw(window)
-        if manColourTwoButtonSelected == True:
+        if manColourTwoButtonSelected:
             manColourTwoButton.drawSelectedLines(window, RED)
 
         startButton = ButtonClass.Button(BEIGE, (WIDTH-BACK_BUTTON_X-BACK_BUTTON_WIDTH), BACK_BUTTON_Y, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT, "Start")
@@ -105,7 +105,7 @@ def chooseGameOptions(window, gameMode, slotOne, slotTwo):
                 elif startButton.isOver(window, mousePos):
                     if areStartGameRequirementsMet(gameMode, manColourOneButtonSelected, manColourTwoButtonSelected, difficultySelected):
                         chosenOptions = [] # Used to store data to return
-                        if manColourOneButtonSelected == True:
+                        if manColourOneButtonSelected:
                             chosenOptions.append(COLOUR_ONE) # Colour one was chosen
                         else:
                             chosenOptions.append(COLOUR_TWO) # Colour two was chosen
@@ -117,9 +117,11 @@ def chooseGameOptions(window, gameMode, slotOne, slotTwo):
                 elif backButton.isOver(window, mousePos): # Return true as back button was pressed
                     return True
 
-def areStartGameRequirementsMet(gameMode, manColourOneButtonSelected, manColourTwoButtonSelected, difficultySelected): # Check that the user has chosen the required options to play - A colour to play as, etc
+
+# Check that the user has chosen the required options to play - A colour to play as, etc
+def areStartGameRequirementsMet(gameMode, manColourOneButtonSelected, manColourTwoButtonSelected, difficultySelected): 
     requirementsMet = False
-    if manColourOneButtonSelected == True or manColourTwoButtonSelected == True:
+    if manColourOneButtonSelected or manColourTwoButtonSelected:
         if gameMode == "PvP":
             requirementsMet = True
         else: # gameMode == "PvAI"

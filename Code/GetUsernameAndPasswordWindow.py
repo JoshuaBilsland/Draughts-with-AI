@@ -17,6 +17,7 @@ from Constants import (
     BACK_BUTTON_Y
 )
 
+# Display the window that has a username and password field so the user can submit a username and password (used for signing up, signing in, etc)
 def getUsernameAndPassword(window, textForButton, slotOne, slotTwo):
     running = True
     

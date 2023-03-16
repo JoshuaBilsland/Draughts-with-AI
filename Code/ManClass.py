@@ -5,7 +5,6 @@ from Constants import (
     RED
 )
 
-
 class Man:
     def __init__(self, row, column, colour):
         self.__row = row
@@ -16,7 +15,8 @@ class Man:
         self.__isKing = False
         self.__isSelected = False
 
-    # Get
+
+    # Get Methods
     def getRow(self):
         return self.__row
 
@@ -36,7 +36,7 @@ class Man:
         return self.__isKing       
         
 
-    # Set 
+    # Set Methods
     def setIsSelected(self, boolean):
         self.__isSelected = boolean
 
@@ -44,23 +44,29 @@ class Man:
         self.__isKing = boolean
             
 
-    # Other
+    # Other Methods
+
+    # Calculate where on the X-Axis the object is on the pygame window
     def determineX(self):
-        x = SQUARE_SIZE * self.__column + SQUARE_SIZE / 2
-        return x
+        return SQUARE_SIZE * self.__column + SQUARE_SIZE / 2
 
+
+    # Calculate where on the Y-Axis the object is on the pygame window
     def determineY(self):
-        y = SQUARE_SIZE * self.__row + SQUARE_SIZE / 2
-        return y
+        return SQUARE_SIZE * self.__row + SQUARE_SIZE / 2
 
-    def draw(self, window): # Draw the man
+
+    # Draw the man object onto the pygame window
+    def draw(self, window):
         radius = (SQUARE_SIZE / 2) - 10
-        if self.__isSelected: # Draw ring to show it is selected -> Draw a larger circle which the man/king is then drawn over (smaller) to appear as a ring around it
+        if self.__isSelected: # Draw ring to show it is currently selected -> Draw a larger circle which the man/king is then drawn over (smaller) to appear as a ring around it
             pygame.draw.circle(window, RED, (self.__x, self.__y), (radius+5))
         pygame.draw.circle(window, self.__colour, (self.__x, self.__y), radius)
-        if self.__isKing: # Draw crown
+        if self.__isKing: # Draw the crown image over the king to show it has been promoted from a man to a king
             window.blit(CROWN, (self.__x - CROWN.get_width()/2, self.__y - CROWN.get_height()/2))
 
+
+    # Update object variables after it has been moved on the board object
     def move(self, newRow, newColumn):	
         self.__row = newRow	
         self.__column = newColumn	

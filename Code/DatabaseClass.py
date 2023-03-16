@@ -18,10 +18,9 @@ class Database:
             print(error)
             quit()
 
-        # Create database if it doesn't exist + Set self.__database
+        # Create database if it doesn't exist already + Set self.__database
         databaseCursor.execute("CREATE DATABASE IF NOT EXISTS DraughtsGame")
         self.__database = "DraughtsGame"
-
 
         # Reconnect to database
         databaseCursor.close()
@@ -29,7 +28,7 @@ class Database:
         databaseConnection = mysql.connector.connect(host = self.__host, user = self.__username, password = self.__password, database = self.__database)
         databaseCursor = databaseConnection.cursor()
 
-        # Create tables if they don't exist
+        # Create tables if they do not already exist
         databaseCursor.execute(""" CREATE TABLE IF NOT EXISTS UserStats (
             StatsID INT NOT NULL AUTO_INCREMENT,
             TotalNumberOfWinsAgainstAI INT UNSIGNED NOT NULL,
@@ -63,20 +62,23 @@ class Database:
             FOREIGN KEY (StatsID) REFERENCES UserStats(StatsID))
         """)
 
-
         databaseCursor.close()
         databaseConnection.close()
 
 
-    # Other
+    # Other Methods
+
+    # Create the connection to the database
     def makeConnection(self): 
         return mysql.connector.connect(host = self.__host, user = self.__username, password = self.__password, database = self.__database)
 
 
+    # Create the cursor object used to execute SQL statements
     def makeCursor(self, databaseConnection):
         return databaseConnection.cursor()
 
 
+    # Take a username and password and check if an account that uses them exists in the database 
     def checkUsernameAndPassword(self, username, password):
         databaseConnection = self.makeConnection()
         databaseCursor = self.makeCursor(databaseConnection)
@@ -98,6 +100,7 @@ class Database:
         return boolean
 
 
+    # Get all information that is stored in the two tables in the database for the account using the given username and password
     def getAccountInformation(self, username, password):
         databaseConnection = self.makeConnection()
         databaseCursor = self.makeCursor(databaseConnection)
@@ -106,12 +109,12 @@ class Database:
         hashedPassword = hashlib.sha256(encodedPassword) # Hash password
 
         preparedQuery = "SELECT * FROM UserAccount, UserStats WHERE Username=%s AND Password=%s AND UserAccount.StatsID = UserStats.StatsID"
-        # Return account information
         accountInformation = databaseCursor.execute(preparedQuery, (username, hashedPassword.hexdigest()))
         
         return databaseCursor.fetchall()
-        
 
+
+    # Check that a given username does not already exist in the database (used when signing up an account)
     def isUsernameUnique(self, username):
         databaseConnection = self.makeConnection()
         databaseCursor = self.makeCursor(databaseConnection)
@@ -131,7 +134,8 @@ class Database:
         return boolean
 
 
-    def addNewUser(self, username, password): # Add a new user to the database
+    # Add a new user to the database
+    def addNewUser(self, username, password): 
         databaseConnection = self.makeConnection()
         databaseCursor =  self.makeCursor(databaseConnection)
 
@@ -169,7 +173,8 @@ class Database:
             databaseCursor.close()
             databaseConnection.close()
 
-    
+
+    # Use a dictionary of user stats to update the values stored in the UserStats table in the record that has the given StatsID
     def updateDatabaseWithDictionary(self, dictionary, StatsID):
         databaseConnection = self.makeConnection()
         databaseCursor = self.makeCursor(databaseConnection)
@@ -199,11 +204,8 @@ class Database:
                 AverageNumberOfMovesToWinAgainstPlayersSum = %s
                 WHERE StatsID = %s
         """
-        print("valuesForStatement", valuesForStatement)
         databaseCursor.execute(preparedQuery, valuesForStatement)
         databaseConnection.commit()
 
         databaseCursor.close()
         databaseConnection.close()
-
-

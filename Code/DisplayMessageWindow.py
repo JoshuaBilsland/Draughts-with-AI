@@ -11,7 +11,6 @@ from Constants import (
     MENU_BACKGROUND_IMAGE
 )
 
-
 def displayMessage(window, enableBackButton, enableBackToMenuButton, text):
     running = True
 

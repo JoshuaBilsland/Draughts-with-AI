@@ -15,7 +15,7 @@ from Constants import (
     MENU_BACKGROUND_IMAGE
 )
 
-# Gets the user to choose which slot they want to sign in/out, view
+# Gets the user to choose a slot (used to choose a slot to sign into, out of, etc)
 def chooseSlot(window, slotOne, slotTwo):
     running = True
 
@@ -45,5 +45,3 @@ def chooseSlot(window, slotOne, slotTwo):
                     return slotTwo
                 elif backButton.isOver(window, mousePos): # Return 
                     return True
-
-                    

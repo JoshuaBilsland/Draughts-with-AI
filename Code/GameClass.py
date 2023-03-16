@@ -49,7 +49,7 @@ class Game:
                     self.__turn = ["AI", COLOUR_ONE]        
 
 
-    # Get
+    # Get Methods
     def getLegalMoves(self):
         return self.__legalMoves
     
@@ -73,12 +73,17 @@ class Game:
     def getTurn(self):
         return self.__turn
 
-    # Other
-    def updateDisplay(self): # Update the window/display
+
+    # Other Methods
+
+    # Update the pygame window/display
+    def updateDisplay(self): 
         self.__board.drawBoard(self.__window, self.__legalMoves, self.__lastMoveMade)
         pygame.display.flip()
     
-    def processClick(self, mousePos): # Return True/False + carry out action depending on if the click is valid [Add stuff for if gameFinished == True]
+
+    # Handle what should happen when a user clicks on the pygame window(should a man/king be selected, should a move be made, etc)
+    def processClick(self, mousePos):
         rowAndColumn = self.getRowAndColumnFromPos(mousePos)
         if self.__selectedMan == None: # if no man is selected, check the user clicked a man and then select it (and get its legal moves)
             # Checks if a man exists on that square (0 means that it is an empty square) + the man belongs to the person whose turn it is + the user should not be able to select a different man/king if they have already moved one this turn
@@ -135,7 +140,9 @@ class Game:
                     self.__lastMoveMade = None
                     self.__selectedMan.setIsSelected(False)
 
-    def selectMan(self, row, column): # Takes a row and column to check if a man exists on that square and what legal moves it can take
+
+    # Takes a row and column to check if a man exists on that square and what legal moves it can take
+    def selectMan(self, row, column): 
         self.__selectedMan = self.__board.getMan(row, column)
         self.__legalMoves = TreeNodeClass.TreeNode([self.__selectedMan.getRow(), self.__selectedMan.getColumn()]) # Tree nodes store legal moves, root is the starting row and column of the selected man
         initialMoves = self.__board.getLegalMoves(1, self.__selectedMan.getIsKing(), self.__selectedMan.getRow(), self.__selectedMan.getColumn(), self.__turn[1]) # Moves that can be made from where the man currently is (opening moves)
@@ -186,15 +193,18 @@ class Game:
                         queue.enQueue(moveChildNode)
 
 
-    def AIMove(self): # Used to carry out an AI's move (get legal moves, work out best move, make move)
+     # Used to carry out an AI's move (get legal moves, work out best move, make move)
+    def AIMove(self):
+        # It is a coincidence that the depth that is used matches the number used to identify the difficulty chosen
+        # I have left this code in so that the depth can easily be changed without needing to add this in again or changing the numbers associated with each difficulty
         if self.__AIDifficulty == 1: # Easy
             depthForDifficulty = 1
         elif self.__AIDifficulty == 2: # Average
             depthForDifficulty = 2
         elif self.__AIDifficulty == 3: # Hard
-            depthForDifficulty = 4
+            depthForDifficulty = 3
         elif self.__AIDifficulty == 4: # Expert 
-            depthForDifficulty = 6
+            depthForDifficulty = 4
 
         if self.__turn[1] == COLOUR_ONE:
             bestMovePath = Minimax.minimax(self.__board, True, depthForDifficulty, -math.inf, math.inf)
@@ -205,6 +215,7 @@ class Game:
         self.endTurn()
 
 
+    # Handle the end of a turn
     def endTurn(self):        
         # Check if game is finished (someone has won or there is a draw)
         checkResults = self.__board.workOutIsGameFinished(self.__turn[1])
@@ -267,7 +278,4 @@ class Game:
         if self.__turn[1] == COLOUR_ONE: # colourOne -> colourTwo
             self.__turn[1] = COLOUR_TWO
         else: # colourTwo -> colourOne
-            self.__turn[1] = COLOUR_ONE
-
-        print("S1Moves",self.__slotOneTotalNumberOfMoves)
-        print("S2Moves",self.__slotTwoTotalNumberOfMoves)     
+            self.__turn[1] = COLOUR_ONE    

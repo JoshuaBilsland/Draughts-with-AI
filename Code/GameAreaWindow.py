@@ -8,10 +8,12 @@ from Constants import (
     COLOUR_ONE,
     COLOUR_TWO
 )
+
 def gameAreaWindow(window, slotOne, slotTwo):
     running = True
 
     while running:
+        # Setup the game (get user to choose game mode and options)
         chosenGameMode = ChooseGameModeWindow.chooseGameMode(window, slotOne, slotTwo)
         if chosenGameMode != True: # if back button was not clicked - a game mode was chosen
             if chosenGameMode == "PvP":
@@ -52,7 +54,9 @@ def gameAreaWindow(window, slotOne, slotTwo):
             running = False  
     return
 
-def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="None"): # Carry out a game
+
+# Carry out a game
+def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="None"): 
     # Work out what to pass to the game class constructor
     print(slotOne.getAllAccountStats())
     if chosenGameMode == "PvP" and chosenSlot == "None": # If PvP chosen, no slot is chosen since both account slots are used
@@ -170,7 +174,7 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                         slotOne.setAnAccountStat("Current Win Streak Against AI", (slotOneCurrentWinStreakAgainstAI+1))
                         # Check if the current win streak against the AI is a new highest win streak (for slot one)
                         slotOneCurrentWinStreakAgainstAI = slotOne.getAnAccountStat("Current Win Streak Against AI")
-                        slotOneHighestWinStreakAgainstAI = slotTwo.getAnAccountStat("Highest Win Streak Against AI")
+                        slotOneHighestWinStreakAgainstAI = slotOne.getAnAccountStat("Highest Win Streak Against AI")
                         if slotOneCurrentWinStreakAgainstAI > slotOneHighestWinStreakAgainstAI:
                             slotOne.setAnAccountStat("Highest Win Streak Against AI", slotOneCurrentWinStreakAgainstAI)
                         # Update average number of moves to win against AI, uses 'sum' and 'count' to get average (for slot one) 

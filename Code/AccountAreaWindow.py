@@ -60,6 +60,8 @@ def accountAreaWindow(window, slotOne, slotTwo):
                     return
     return
 
+
+# Used if the sign in button is clicked (display required window/s to sign an account into an account slot)
 def signIn(window, slotOne, slotTwo):
     running = True
     while running:
@@ -86,6 +88,8 @@ def signIn(window, slotOne, slotTwo):
         elif returnValue: # Back button was clicked, return to account area window
             return True
         
+
+# Use an account slot's connection to the database object to create a new user in the database
 def signUp(window, slotOne, slotTwo):
     returnValue = GetUsernameAndPasswordWindow.getUsernameAndPassword(window, "Sign Up", slotOne, slotTwo)
     if returnValue != True: # Add new account if a username and password was returned
@@ -96,6 +100,8 @@ def signUp(window, slotOne, slotTwo):
     elif returnValue: # True = back button was clicked, go back to previous page/window
         return True
 
+
+# Get the user to choose an account slot to 'sign out'
 def signOut(window, slotOne, slotTwo):
     returnValue = ChooseSlotWindow.chooseSlot(window, slotOne, slotTwo) # choose slot to sign out
     if returnValue != True:
@@ -106,8 +112,10 @@ def signOut(window, slotOne, slotTwo):
     elif returnValue: # True = back button was clicked, go back to previous page/window
         return True
 
+
+# Choose a slot to see the stats stored about the account (view the account)
 def viewAccount(window, slotOne, slotTwo): 
-    # Choose a slot to see the stats stored about the account (view the account)
+
     running = True
     while running:
         returnValue = ChooseSlotWindow.chooseSlot(window, slotOne, slotTwo) 
@@ -167,8 +175,6 @@ def viewAccount(window, slotOne, slotTwo):
                             mousePos = pygame.mouse.get_pos()
                             if backButton.isOver(window, mousePos):
                                 displayStats = False
-
-
 
             else:
                 # Display error message and continue loop (go back to choose slot window)

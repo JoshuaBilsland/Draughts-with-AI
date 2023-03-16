@@ -1,5 +1,4 @@
 class AccountSlot:
-    
     def __init__(self):
         self.__username = None
         self.__database = None # database object (DatabaseClass.Database)
@@ -29,7 +28,7 @@ class AccountSlot:
         } 
 
 
-    # Get
+    # Get Methods
     def getUsername(self):
         return self.__username
 
@@ -55,7 +54,7 @@ class AccountSlot:
             return None
 
 
-    # Set
+    # Set Methods
     def setUsername(self, username):
         self.__username = username
 
@@ -79,12 +78,14 @@ class AccountSlot:
             self.__accountStats[key] = value
     
 
-    # Other
-    def applyDictionaryChangesToDatabase(self): # Called so changes to the values in the dictionary are also applied to the database
-        print(self.__accountStats)
+    # Other Methods
+
+    # Called so changes to the values in the dictionary are also applied to the database
+    def applyDictionaryChangesToDatabase(self): 
         self.__database.updateDatabaseWithDictionary(self.__accountStats, self.__StatsID)
             
 
+    # Attempt to sign an account into the slot object (if an account with the given username and password are found in the database)
     def signIn(self, username, password):
         checkUsernameAndPassword = self.__database.checkUsernameAndPassword(username, password) # Check if username & password match an account
         if not checkUsernameAndPassword: 
@@ -118,17 +119,15 @@ class AccountSlot:
             return False
             
 
+    # Use the account slot's connection to the database object to add a new user to the database
     def signUp(self, username, password):
         self.__database.addNewUser(username, password)
 
 
-    def signOut(self): # Clear the account slot information when the account is signed out, ready for next account to sign in
+    # Clear the account slot information when the account is signed out, ready for next account to sign in
+    def signOut(self): 
         self.__username = None
         self.__AccountID = None
         self.__StatsID = None
         self.__colour = None
         self.__accountStats = dict.fromkeys(self.__accountStats, None)
-
-
-        
-    
