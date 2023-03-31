@@ -54,7 +54,7 @@ def chooseGameOptions(window, gameMode, slotOne, slotTwo):
         else: # gameMode == "PvAI"
             font = pygame.font.SysFont("britannic", int(WIDTH*0.04)) # Get font using system fonts
             chooseColourText = font.render("Choose Colour To Play As", 1, BEIGE)
-            window.blit(chooseColourText,   chooseColourText.get_rect(center=(WIDTH*0.5, HEIGHT*0.1))) # Centre the text on its own rect
+            window.blit(chooseColourText, chooseColourText.get_rect(center=(WIDTH*0.5, HEIGHT*0.1))) # Centre the text on its own rect
 
             # Title + Buttons for choosing the difficulty of the AI
             chooseDifficultyText = font.render("Select Difficulty", 1, BEIGE)  

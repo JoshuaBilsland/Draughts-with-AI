@@ -26,12 +26,6 @@ class Man:
     def getColour(self):
         return self.__colour
 
-    def getX(self):
-        return self.__x
-    
-    def getY(self):
-        return self.__y
-
     def getIsKing(self):
         return self.__isKing       
         

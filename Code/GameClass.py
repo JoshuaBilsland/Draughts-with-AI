@@ -67,7 +67,7 @@ class Game:
     def getSlotOneTotalNumberOfMoves(self):
         return self.__slotOneTotalNumberOfMoves
     
-    def getSlotOneTotalNumberOfMoves(self):
+    def getSlotTwoTotalNumberOfMoves(self):
         return self.__slotTwoTotalNumberOfMoves
     
     def getTurn(self):

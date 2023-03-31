@@ -47,6 +47,3 @@ def displayMessage(window, enableBackButton, enableBackToMenuButton, text):
                 if enableBackToMenuButton:
                     if backToMenuButton.isOver(window, mousePos):
                         return False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return True

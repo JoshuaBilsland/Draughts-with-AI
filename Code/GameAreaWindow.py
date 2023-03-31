@@ -19,11 +19,11 @@ def gameAreaWindow(window, slotOne, slotTwo):
             if chosenGameMode == "PvP":
                 # PvP was chosen, check an account in signed in to each account - display error messages
                 if slotOne.getAccountID() == None and slotTwo.getAccountID() == None:
-                    backButtonClicked = DisplayMessageWindow.displayMessage(window, True, False, "No Account Signed in to Either Slot")
+                    backButtonClicked = DisplayMessageWindow.displayMessage(window, True, False, "No Account Signed into Either Slot")
                 elif slotOne.getAccountID() == None:
-                    backButtonClicked = DisplayMessageWindow.displayMessage(window, True, False, "No Account Signed in to Slot One")
+                    backButtonClicked = DisplayMessageWindow.displayMessage(window, True, False, "No Account Signed into Slot One")
                 elif slotTwo.getAccountID() == None:
-                    backButtonClicked = DisplayMessageWindow.displayMessage(window, True, False, "No Account Signed in to Slot Two")
+                    backButtonClicked = DisplayMessageWindow.displayMessage(window, True, False, "No Account Signed into Slot Two")
                 # Slots do have an account signed in to them
                 elif slotOne.getAccountID() != None and slotTwo.getAccountID() != None:
                     gameOptions = ChooseGameOptionsWindow.chooseGameOptions(window, chosenGameMode, slotOne, slotTwo)
@@ -58,7 +58,6 @@ def gameAreaWindow(window, slotOne, slotTwo):
 # Carry out a game
 def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="None"): 
     # Work out what to pass to the game class constructor
-    print(slotOne.getAllAccountStats())
     if chosenGameMode == "PvP" and chosenSlot == "None": # If PvP chosen, no slot is chosen since both account slots are used
         game = GameClass.Game(window, chosenGameMode, gameOptions[0], slotOne, slotTwo)
     else: # gameMode == "PvAI" and chosenSlot != "None" (In PvAI, one slot is chosen to be used)
@@ -75,7 +74,7 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
         if game.getGameFinished():
             winner = game.getWinner()
             slotOneTotalNumberOfMoves = game.getSlotOneTotalNumberOfMoves()
-            slotTwoTotalNumberOfMoves = game.getSlotOneTotalNumberOfMoves()
+            slotTwoTotalNumberOfMoves = game.getSlotTwoTotalNumberOfMoves()
 
             # Update Account Stats and display winner
             if winner == None:
@@ -141,10 +140,8 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                             slotOne.setAnAccountStat("Highest Win Streak Against Players", slotOneCurrentWinStreakAgainstPlayers)
                         # Update average number of moves to win against players, uses 'sum' and 'count' to get average (for slot one) 
                         slotOneTotalNumberOfMoves = game.getSlotOneTotalNumberOfMoves() # Get the number of moves slot one made in the game just played
-                        print("final num of moves for s1", slotOneTotalNumberOfMoves)
                         slotOneExistingSum = slotOne.getAnAccountStat("Average Number of Moves to Win Against Players Sum") # Get the total number of moves the account in slot one has made in all their previously won games against other players 
                         slotOneNewSum = slotOneTotalNumberOfMoves + slotOneExistingSum # Get the new sum by adding them together
-                        print("new s1 sum", slotOneNewSum)
                         slotOne.setAnAccountStat("Average Number of Moves to Win Against Players Sum", slotOneNewSum)
                         
                         slotOneExistingCount = slotOne.getAnAccountStat("Average Number of Moves to Win Against Players Count") # Count is used to work out the average (how many games make up the moves sum)
@@ -153,7 +150,6 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                         slotOneMovesSum = slotOne.getAnAccountStat("Average Number of Moves to Win Against Players Sum") # Call again as the values have been changed
                         slotOneMovesCount = slotOne.getAnAccountStat("Average Number of Moves to Win Against Players Count")
                         slotOneAverage = slotOneMovesSum / slotOneMovesCount
-                        print("avg", slotOneAverage)
                         slotOne.setAnAccountStat("Average Number of Moves to Win Against Players", slotOneAverage)
                         # Increment number of losses against players by 1 (for slot two)
                         slotTwoCurrentLossesAgainstPlayers = slotTwo.getAnAccountStat("Total Number of Losses Against Players")
@@ -266,15 +262,12 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
 
             # Use the now updated dictionary in the account slot/s to update the database (to reflect the changes there as well)
             if chosenGameMode == "PvP":
-                print("PVP")
                 slotOne.applyDictionaryChangesToDatabase()
                 slotTwo.applyDictionaryChangesToDatabase()
             else:
                 if chosenSlot == slotOne:
-                    print("s1 PvAI")
                     slotOne.applyDictionaryChangesToDatabase()
                 else:
-                    print("s2 PvAI")
                     slotTwo.applyDictionaryChangesToDatabase()
                 
             # Display the message
@@ -293,5 +286,3 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                     pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
                     game.processClick(mousePos)
                     pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
-
-
