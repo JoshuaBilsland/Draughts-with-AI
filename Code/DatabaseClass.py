@@ -172,6 +172,9 @@ class Database:
 
             databaseCursor.close()
             databaseConnection.close()
+            
+            return True # Return True to show the account was created since the username was unique
+        return False # To show the username was not unique so account was not created
 
 
     # Use a dictionary of user stats to update the values stored in the UserStats table in the record that has the given StatsID

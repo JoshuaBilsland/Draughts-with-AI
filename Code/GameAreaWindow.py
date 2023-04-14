@@ -283,6 +283,6 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                     quit()
                 if event.type == pygame.MOUSEBUTTONDOWN: # Get where the user clicked and see what should happen (if anything)
                     mousePos = pygame.mouse.get_pos()
-                    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+                    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN) # Used to stop the user clicking things while their click is processed (to see what effect it should have and carry out any actions, such as selecting a man/king or carrying out a move)
                     game.processClick(mousePos)
                     pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)

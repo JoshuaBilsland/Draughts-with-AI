@@ -121,8 +121,11 @@ class AccountSlot:
 
     # Use the account slot's connection to the database object to add a new user to the database
     def signUp(self, username, password):
-        self.__database.addNewUser(username, password)
-
+        signedUp = self.__database.addNewUser(username, password)
+        if signedUp: # Account was created as username was unique
+            return True
+        else: # Username was not unique so account not created
+            return False
 
     # Clear the account slot information when the account is signed out, ready for next account to sign in
     def signOut(self): 

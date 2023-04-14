@@ -67,7 +67,7 @@ def makeAllDeepCopiedBoards(board, allMovePaths):
 def deepCopyBoardAndApplyMovePath(board, movePath): 
     deepCopiedBoard = copy.deepcopy(board)
     for move in movePath:
-        if len(move) != 2:
+        if len(move) != 2: # The first item in a move path is a list which contains the starting row and column and not an actual move, so skip over it
             currentRow = move[2]
             currentColumn = move[3]
             man = deepCopiedBoard.getMan(currentRow, currentColumn)
