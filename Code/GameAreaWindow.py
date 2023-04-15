@@ -216,7 +216,7 @@ def runGame(window, slotOne, slotTwo, chosenGameMode, gameOptions, chosenSlot="N
                         slotTwoMovesSum = slotTwo.getAnAccountStat("Average Number of Moves to Win Against Players Sum") # Call again as the values have been changed
                         slotTwoMovesCount = slotTwo.getAnAccountStat("Average Number of Moves to Win Against Players Count")
                         slotTwoAverage = slotTwoMovesSum / slotTwoMovesCount
-                        slotTwo.setAnAccountStat("Average Number of Moves to Win Against Players", slotTwoNewAverage)
+                        slotTwo.setAnAccountStat("Average Number of Moves to Win Against Players", slotTwoAverage)
                         # Increment number of losses against players by 1 (for slot one)
                         slotOneCurrentLossesAgainstPlayers = slotOne.getAnAccountStat("Total Number of Losses Against Players")
                         slotOne.setAnAccountStat("Total Number of Losses Against Players", (slotOneCurrentLossesAgainstPlayers+1))
