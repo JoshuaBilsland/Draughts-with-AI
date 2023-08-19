@@ -1,5 +1,5 @@
 # Draughts-with-AI
-This is my project for my NEA for A-level computer science. I had already started this project before making this repository but because of large breaks, due to other schoolwork, I needed to go over what I had done already. I have decided to use Git and GitHub so I can upload each file after reading back through it. From now on, I will be able to use Git to track changes over time and use commit messages to remind me about what I was doing when I last added to the project.
+This is my project for my NEA for A-level Computer Science. I had already started this project before making this repository but because of large breaks, due to other schoolwork, I needed to go over what I had done already. I have decided to use Git and GitHub so I can upload each file after reading back through it. From now on, I will be able to use Git to track changes over time and use commit messages to remind me about what I was doing when I last added to the project.
 
 ---
 
